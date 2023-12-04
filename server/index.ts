@@ -3,27 +3,17 @@ import React from "react";
 import ReactDOM from "react-dom/server";
 
 import { App } from "../client/App";
+import { getHtmlPage } from "./utils/template";
 
 const PORT = 3000;
 
 const server = express();
 
-const getHtmlPage = (app: string) => `
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>My App</title>
-  </head>
-  <body>
-    <div id="root">${app}</div>
-    <script src="/bundle.js"></script>
-  </body>
-</html>
-`;
-
 server.get("/", (req, res) => {
   const reactInitial = ReactDOM.renderToString(React.createElement(App));
-  res.send(getHtmlPage(reactInitial));
+  getHtmlPage(reactInitial).then((html) => {
+    res.header("Content-Type", "text/html").send(html);
+  });
 });
 
 server.listen(PORT, () => {
