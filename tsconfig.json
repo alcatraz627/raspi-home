@@ -9,6 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx"
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "vite.config.mts", "server/entry/server.tsx"],
   "exclude": ["node_modules"]
 }
