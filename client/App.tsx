@@ -1,11 +1,15 @@
-import React, { FC, FunctionComponent, useEffect } from 'react'
-import { Button } from "@mui/material"
-
+import { Button, ThemeProvider } from "@mui/material"
+import { Navbar } from "./Navbar"
+import { theme } from "../style/theme"
 
 export const App = (): JSX.Element => {
 
-    return <div>
-        App with ssr and mui
-        <Button>Button</Button>
-    </div>
+    return (
+        <ThemeProvider theme={theme}>
+            <div>
+                <Navbar />
+                App with ssr and mui
+                <Button>Button</Button>
+            </div>
+        </ThemeProvider>)
 }
