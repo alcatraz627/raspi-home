@@ -9,7 +9,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, "client/index.tsx"),
       name: "react-vite-ssr",
-      fileName: (format) => `index.js`,
+      fileName: () => `index.js`,
     } 
   }
 });
