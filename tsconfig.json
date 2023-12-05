@@ -1,14 +1,20 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "commonjs",
-    "outDir": "./dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "react-jsx"
-  },
-  "include": ["**/*.ts", "vite.config.mts", "server/entry/server.tsx"],
-  "exclude": ["node_modules"]
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "commonjs",
+        "outDir": "./dist",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "jsx": "react-jsx",
+        "noEmit": true,
+        "isolatedModules": true,
+        "pretty": true,
+        "alwaysStrict": true,
+        
+      },
+    "include": ["**/*.ts", "vite.config.mts", "server/entry/server.tsx"],
+    "references": [{ "path": "./tsconfig.node.json" }],
+    "exclude": ["node_modules"]
 }
