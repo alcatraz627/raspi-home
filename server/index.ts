@@ -1,57 +1,71 @@
 import express from "express";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
+import {
+    createStaticHandler,
+    createStaticRouter,
+    StaticHandlerContext,
+} from "react-router-dom/server";
+import { routes } from "../client/routes";
+import { createFetchRequest } from "./httpToFetchRequest";
 
 const PORT = 3000;
 
 const initServer = async () => {
-  const server = express();
+    const server = express();
+    const routeHandler = createStaticHandler(routes);
 
-  const vite = await createViteServer({
-    server: {
-      middlewareMode: true,
-    },
-    appType: "custom",
-  });
+    const vite = await createViteServer({
+        server: {
+            middlewareMode: true,
+        },
+        appType: "custom",
+    });
 
-  server.use(vite.middlewares);
+    server.use(vite.middlewares);
 
-  server.use(express.static("static"));
-  server.use(express.static("dist"));
+    server.use(express.static("static"));
+    server.use(express.static("dist"));
 
-  server.get("*", (req, res) => {
-    (async () => {
-      try {
-        const htmlTemplate = await fs.promises.readFile(
-          __dirname + "/entry/index.html"
-        );
+    server.get("*", (req, res) => {
+        (async () => {
+            const fetchRequest = createFetchRequest(req);
+            const context = (await routeHandler.query(
+                fetchRequest
+            )) as StaticHandlerContext;
+            const router = createStaticRouter(routeHandler.dataRoutes, context);
 
-        const template = await vite.transformIndexHtml(
-          req.url,
-          htmlTemplate.toString()
-        );
-        const { render } = await vite.ssrLoadModule(
-          __dirname + "/entry/server.tsx"
-        );
-        const rendered = await render(req.url);
+            try {
+                const htmlTemplate = await fs.promises.readFile(
+                    __dirname + "/entry/index.html"
+                );
 
-        const finalHtml = template
-          .replace(`<!--app-head-->`, rendered.head ?? "")
-          .replace(`<!--app-html-->`, rendered.html ?? "");
+                const template = await vite.transformIndexHtml(
+                    req.url,
+                    htmlTemplate.toString()
+                );
+                const { render } = await vite.ssrLoadModule(
+                    __dirname + "/entry/server.tsx"
+                );
+                const rendered = await render({ router, context });
 
-        res.send(finalHtml);
-        0;
-      } catch (e) {
-        vite.ssrFixStacktrace(e as Error);
-        console.log(e);
-        res.end();
-      }
-    })();
-  });
+                const finalHtml = template
+                    .replace(`<!--app-head-->`, rendered.head ?? "")
+                    .replace(`<!--app-html-->`, rendered.html ?? "");
 
-  server.listen(PORT, () => {
-    console.log(`Server is listening on port: ${PORT}`);
-  });
+                res.send(finalHtml);
+                0;
+            } catch (e) {
+                vite.ssrFixStacktrace(e as Error);
+                console.log(e);
+                res.end();
+            }
+        })();
+    });
+
+    server.listen(PORT, () => {
+        console.log(`Server is listening on port: ${PORT}`);
+    });
 };
 
 initServer();
