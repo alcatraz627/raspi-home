@@ -11,7 +11,7 @@ export const Navbar = (): JSX.Element => {
                     <Typography variant="h6" component="div" sx={{
                         flexGrow: 1,
                     }}>
-                        Chopra Raspi Home
+                        Chopra Ras-pi Home
                     </Typography>
                     <Button variant="text" color="inherit">Button</Button>
                 </Toolbar>
