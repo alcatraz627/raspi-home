@@ -6,7 +6,7 @@
 - Run dev server with `npm run dev`
 - Build server with `npm run build && npm run serve`
 - [ ] TODO: Deployment to raspi
-
+- [ ] ESLint + Prettier
 
 ### Goal
 
