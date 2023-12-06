@@ -1,16 +1,34 @@
+import express, { Request, Response, Express } from "express";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { Request, Response } from "express";
 import {
     StaticHandlerContext,
     createStaticHandler,
     createStaticRouter,
 } from "react-router-dom/server";
-import { createFetchRequest } from "../utils/httpToFetchRequest";
+import { ViteDevServer, createServer as createViteServer } from "vite";
 import { routes } from "../../client/routes";
-import { ViteDevServer } from "vite";
+import { createFetchRequest } from "../utils/httpToFetchRequest";
 
 const routeHandler = createStaticHandler(routes);
+
+export const renderStaticAssets = async (server: Express) => {
+    const viteServer = await createViteServer({
+        server: {
+            middlewareMode: true,
+        },
+        appType: "custom",
+    });
+
+    server.use(viteServer.middlewares);
+
+    server.use(express.static("static"));
+    server.use(express.static("dist"));
+    server.use(express.static("data"));
+    server.use("/favicon.ico", express.static("favicon.png"));
+
+    server.get("*", renderFrontEnd(viteServer));
+};
 
 export const renderFrontEnd =
     (viteServer: ViteDevServer) => async (req: Request, res: Response) => {

@@ -1,19 +1,24 @@
-import { Request, Response } from "express";
 import busboy from "busboy";
+import { Request, Response } from "express";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-const DataFolderPath = path.join(__dirname, "..", "..", "..", "data");
+export const DataFolderPath = path.join(__dirname, "..", "..", "..", "data");
+
+export const BROWSE_PREFIX = "/browse";
+
+const getUrlPath = (originalPath: string, prefix = BROWSE_PREFIX) =>
+    originalPath.replace(prefix, "");
 
 export const listDirContents = async (
-    req: Request<undefined, any, any, { path?: string }>,
+    req: Request,
     res: Response<
         | { path: string; directories: string[]; files: string[] }
         | { error: string }
     >
 ) => {
     try {
-        const queryPath = req.query.path || "/";
+        const queryPath = getUrlPath(req.path);
         const folder = path.join(DataFolderPath, queryPath);
 
         const contents = await fs
@@ -36,32 +41,16 @@ export const listDirContents = async (
     }
 };
 
-export const createDir = async (
-    req: Request<undefined, any, any, { path?: string }>,
-    res: Response<
-        | { path: string; directories: string[]; files: string[] }
-        | { error: string }
-    >
-) => {
+export const createDir = async (req: Request, res: Response) => {
     try {
-        const queryPath = req.query.path || "/";
+        const queryPath = getUrlPath(req.path);
         const folder = path.join(DataFolderPath, queryPath);
 
-        const contents = await fs
-            .readdir(folder, {
-                withFileTypes: true,
-            })
-            .catch((e) => {
-                console.log(e);
-                return [];
-            });
+        await fs.mkdir(folder, {
+            recursive: true,
+        });
 
-        const directories = contents
-            .filter((d) => d.isDirectory())
-            .map((d) => d.name);
-        const files = contents.filter((d) => d.isFile()).map((d) => d.name);
-
-        res.json({ path: queryPath, directories, files });
+        res.redirect(201, req.url);
     } catch (e) {
         res.status(404).json({ error: (e as Error).message });
     }
@@ -69,11 +58,15 @@ export const createDir = async (
 
 export const getFile = async (
     req: Request<undefined, any, any, { path?: string }>,
-    res: Response<string | Buffer | { error: string }>
+    res: Response<string | any | Buffer | { error: string }>
 ) => {
     try {
-        const queryPath = req.query.path || "/";
+        const queryPath = getUrlPath(req.path);
         const filePath = path.join(DataFolderPath, queryPath);
+
+        if ((await fs.stat(filePath)).isDirectory()) {
+            res.redirect(302, "/api" + req.url + "/");
+        }
 
         res.sendFile(filePath);
     } catch (e) {

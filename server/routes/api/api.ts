@@ -1,17 +1,19 @@
-import express from "express";
+import { Router } from "express";
 import {
-    getFile,
-    writeFile,
-    listDirContents,
+    BROWSE_PREFIX,
     createDir,
     fileUploadScreen,
-} from "./directory";
+    getFile,
+    listDirContents,
+    writeFile,
+} from "./browse";
 
-const apiRouter = express.Router();
+const apiRouter = Router({ strict: true, caseSensitive: true });
 
-apiRouter.route("/file*").get(getFile).post(writeFile);
-apiRouter.route("/directory*").get(listDirContents).post(createDir);
+apiRouter.route(`${BROWSE_PREFIX}*/`).get(listDirContents).post(createDir);
+apiRouter.route(`${BROWSE_PREFIX}*`).get(getFile).post(writeFile);
 
-apiRouter.use("/upload", fileUploadScreen);
+// Testing only
+apiRouter.use("/upload/", fileUploadScreen);
 
 export { apiRouter };
