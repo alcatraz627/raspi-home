@@ -1,6 +1,8 @@
+import { apiRouter } from "@/server/routes/api/api";
+import { renderStaticAssets } from "@/server/routes/renderStaticAssets";
 import express from "express";
-import { apiRouter } from "./routes/api/api";
-import { renderStaticAssets } from "./routes/renderStaticAssets";
+import "module-alias/register";
+
 
 const PORT = 3000;
 

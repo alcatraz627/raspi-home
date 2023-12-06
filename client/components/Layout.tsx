@@ -1,7 +1,7 @@
 import { Box, Container, ThemeProvider } from "@mui/material";
 import React from "react";
 import { Navbar } from "./Navbar";
-import { theme } from "../../style/theme";
+import { theme } from "../style/theme";
 
 export const Layout = ({
     children,
