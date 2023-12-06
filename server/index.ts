@@ -7,11 +7,11 @@ import {
     StaticHandlerContext,
 } from "react-router-dom/server";
 import { routes } from "../client/routes";
-import { createFetchRequest } from "./httpToFetchRequest";
+import { createFetchRequest } from "./utils/httpToFetchRequest";
 import {
     createDir,
     getFile,
-    createFile,
+    writeFile,
     fileUploadScreen,
     listDirContents,
 } from "./routes/api/directory";

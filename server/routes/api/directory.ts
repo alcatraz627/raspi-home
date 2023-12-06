@@ -98,7 +98,7 @@ export const fileUploadScreen = (
     ).end();
 };
 
-export const createFile = async (
+export const writeFile = async (
     req: Request<undefined, any, any, { path?: string }>,
     res: Response
 ) => {

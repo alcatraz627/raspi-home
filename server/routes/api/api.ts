@@ -1,7 +1,7 @@
 import express from "express";
 import {
     getFile,
-    createFile,
+    writeFile,
     listDirContents,
     createDir,
     fileUploadScreen,
@@ -9,7 +9,7 @@ import {
 
 const apiRouter = express.Router();
 
-apiRouter.route("/file*").get(getFile).post(createFile);
+apiRouter.route("/file*").get(getFile).post(writeFile);
 apiRouter.route("/directory*").get(listDirContents).post(createDir);
 
 apiRouter.use("/upload", fileUploadScreen);

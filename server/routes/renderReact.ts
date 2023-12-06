@@ -6,7 +6,7 @@ import {
     createStaticHandler,
     createStaticRouter,
 } from "react-router-dom/server";
-import { createFetchRequest } from "../httpToFetchRequest";
+import { createFetchRequest } from "../utils/httpToFetchRequest";
 import { routes } from "../../client/routes";
 import { ViteDevServer } from "vite";
 
