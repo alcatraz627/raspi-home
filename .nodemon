@@ -1,0 +1,11 @@
+{
+    "watch": [
+        "server",
+        "client"
+    ],
+    "ext": "ts,json,tsx",
+    "ignore": [
+        "node_modules"
+    ],
+    "exec": "ts-node --esm ./server/index.ts --project ./tsconfig.json"
+}

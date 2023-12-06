@@ -11,12 +11,12 @@
         "noEmit": true,
         "isolatedModules": true,
         "pretty": true,
-        "alwaysStrict": true,
+        "alwaysStrict": true
         // "noUnusedLocals": true,
         // "noUnusedParameters": true,
         // "noFallthroughCasesInSwitch": true
     },
-    "include": ["**/*.ts", "vite.config.mts", "server/entry/server.tsx"],
+    "include": ["**/*.ts", "**/*.tsx", "vite.config.ts"],
     "references": [{ "path": "./tsconfig.node.json" }],
     "exclude": ["node_modules"]
 }
