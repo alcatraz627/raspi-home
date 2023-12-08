@@ -4,12 +4,17 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  build: {
-    lib: {
-      entry: path.resolve(__dirname, "client/index.tsx"),
-      name: "react-vite-ssr",
-      fileName: () => `index.js`,
-    } 
-  }
+    resolve: {
+        alias: {
+            "@": __dirname,
+        },
+    },
+    plugins: [react()],
+    build: {
+        lib: {
+            entry: path.resolve(__dirname, "client/index.tsx"),
+            name: "react-vite-ssr",
+            fileName: () => `index.js`,
+        },
+    },
 });
