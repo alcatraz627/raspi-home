@@ -20,8 +20,7 @@ export interface DirListItemProps {
     avatarVariant?: "rounded" | "circular";
     avatarBgColor?: string;
 
-    SecondaryIcon?: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
-    secondaryAction?: () => void;
+    secondaryAction?: ReactNode;
 }
 
 export const DirListItem: FunctionComponent<DirListItemProps> = ({
@@ -33,22 +32,9 @@ export const DirListItem: FunctionComponent<DirListItemProps> = ({
     avatarBgColor,
 
     secondaryAction,
-    SecondaryIcon,
 }) => {
     return (
-        <ListItem
-            secondaryAction={
-                SecondaryIcon ? (
-                    <IconButton
-                        edge="end"
-                        aria-label="delete"
-                        onClick={secondaryAction}
-                    >
-                        <SecondaryIcon fontSize="small" />
-                    </IconButton>
-                ) : null
-            }
-        >
+        <ListItem secondaryAction={secondaryAction}>
             <ListItemButton onClick={primaryAction} dense>
                 <ListItemAvatar>
                     <Avatar

@@ -1,5 +1,13 @@
-import { Delete, InsertDriveFile } from "@mui/icons-material";
-import { Box, Divider, List, SxProps, Theme, Typography } from "@mui/material";
+import { Delete, InsertDriveFile, OpenInNew } from "@mui/icons-material";
+import {
+    Box,
+    Divider,
+    IconButton,
+    List,
+    SxProps,
+    Theme,
+    Typography,
+} from "@mui/material";
 import { FunctionComponent } from "react";
 import { DirListItem, DirListItemProps } from "./dir-list-item";
 import { NavigatePath } from "@/client/pages/directory-page";
@@ -35,10 +43,8 @@ export const DirList: FunctionComponent<DirListProps> = ({
                 <Typography
                     variant="body2"
                     sx={{
-                        // pl: 4,
                         opacity: 0.5,
                         py: 2,
-                        // border: "1px solid red",
                         textAlign: "center",
                     }}
                 >
@@ -52,7 +58,11 @@ export const DirList: FunctionComponent<DirListProps> = ({
                     primaryAction={() => {
                         selectFolder((p) => p + "/" + dir);
                     }}
-                    SecondaryIcon={Delete}
+                    secondaryAction={
+                        <IconButton edge="end">
+                            <Delete fontSize="small" />
+                        </IconButton>
+                    }
                 />
             ))}
 
@@ -67,7 +77,24 @@ export const DirList: FunctionComponent<DirListProps> = ({
                         selectFile((p) => p + "/" + f);
                     }}
                     PrimaryIcon={InsertDriveFile}
-                    SecondaryIcon={Delete}
+                    secondaryAction={
+                        <Box>
+                            <IconButton
+                                edge="end"
+                                onClick={() => {
+                                    const filePath =
+                                        pathList.join("/") + "/" + f;
+                                    window.open(filePath, "_blank");
+                                }}
+                            >
+                                <OpenInNew fontSize="small" />
+                            </IconButton>
+                            &nbsp;
+                            <IconButton edge="end">
+                                <Delete fontSize="small" />
+                            </IconButton>
+                        </Box>
+                    }
                 />
             ))}
         </List>

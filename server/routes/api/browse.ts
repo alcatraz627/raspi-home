@@ -126,7 +126,7 @@ export const writeFile = async (
 
         req.pipe(uploadEvent);
     } catch (e) {
-        res.status(404).json({ error: (e as Error).message });
+        res.status(400).json({ error: (e as Error).message });
     }
 };
 
@@ -140,9 +140,9 @@ export const deleteFile = async (
 
         await fs.rm(filePath);
 
-        res.redirect(302, "/api/browse" + path.dirname(queryPath));
+        res.status(204).end();
     } catch (e) {
-        res.status(404).json({ error: (e as Error).message });
+        res.status(400).json({ error: (e as Error).message });
     }
 };
 
@@ -161,6 +161,6 @@ export const moveFile = async (
 
         res.redirect(302, "/api/browse" + path.dirname(newPath));
     } catch (e) {
-        res.status(404).json({ error: (e as Error).message });
+        res.status(400).json({ error: (e as Error).message });
     }
 };
