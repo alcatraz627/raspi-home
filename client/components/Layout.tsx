@@ -1,6 +1,6 @@
 import { Box, Container, ThemeProvider } from "@mui/material";
 import React from "react";
-import { Navbar } from "./Navbar";
+import { Navbar } from "./navbar";
 import { theme } from "../style/theme";
 
 export const Layout = ({
@@ -12,7 +12,9 @@ export const Layout = ({
         <ThemeProvider theme={theme}>
             <Box>
                 <Navbar />
-                <Container sx={{ pt: 2 }}>{children}</Container>
+                <Container maxWidth="xl" sx={{ pt: 2 }}>
+                    {children}
+                </Container>
             </Box>
         </ThemeProvider>
     );
