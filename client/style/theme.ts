@@ -1,9 +1,9 @@
-import { createTheme } from "@mui/material/styles"
-import { green, pink, red } from "@mui/material/colors"
-import { Variant } from "@mui/material/styles/createTypography"
+import { createTheme } from "@mui/material/styles";
+import { green, pink, red } from "@mui/material/colors";
+import { Variant } from "@mui/material/styles/createTypography";
 
-const TitleFont = "Comfortaa, sans-serif"
-const TextFont = "Open Sans, sans-serif"
+const TitleFont = "Comfortaa, sans-serif";
+const TextFont = "Open Sans, sans-serif";
 
 // Create a theme instance.
 export const theme = createTheme({
@@ -93,7 +93,6 @@ export const theme = createTheme({
                         textTransform: "none",
                         letterSpacing: 0.2,
                         fontSize: 16,
-    
                     },
                 },
             ],
@@ -105,6 +104,7 @@ export const theme = createTheme({
                     textTransform: "none",
                     letterSpacing: 0.2,
                     fontSize: 16,
+                    borderRadius: 1000000,
                 },
                 sizeSmall: {
                     fontSize: 13,
@@ -112,7 +112,10 @@ export const theme = createTheme({
                 sizeLarge: {
                     fontSize: 18,
                 },
+                contained: {
+                    boxShadow: "none",
+                },
             },
         },
     },
-})
+});

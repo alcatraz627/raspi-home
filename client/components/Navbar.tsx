@@ -4,7 +4,7 @@ import { RouteMap } from "../routes";
 
 export const Navbar = (): JSX.Element => {
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box>
             <AppBar position="static">
                 <Toolbar>
                     <Typography
@@ -23,7 +23,7 @@ export const Navbar = (): JSX.Element => {
                             color="inherit"
                             href={route.path}
                             sx={{
-                                textTransform: "capitalize"
+                                textTransform: "capitalize",
                             }}
                         >
                             {route.key}

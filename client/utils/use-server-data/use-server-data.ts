@@ -48,7 +48,7 @@ export const useServerData = <
         try {
             const response = await queryFn(queryParamsProp);
             setData(response);
-            setStatus("loading");
+            setStatus("success");
 
             return response;
         } catch (error) {

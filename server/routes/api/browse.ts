@@ -65,14 +65,14 @@ export const createDir = async (
     }
 };
 
-export type GetFileResponse = File;
+export type GetFileResponse = string;
 
 export const getFile = async (
     req: Request,
     res: Response<GetFileResponse | ErrorResponse>
 ) => {
     try {
-        const queryPath = getUrlPath(req.path);
+        const queryPath = decodeURI(getUrlPath(req.path));
         const filePath = path.join(DataFolderPath, queryPath);
 
         if ((await fs.stat(filePath)).isDirectory()) {
@@ -125,6 +125,41 @@ export const writeFile = async (
         });
 
         req.pipe(uploadEvent);
+    } catch (e) {
+        res.status(404).json({ error: (e as Error).message });
+    }
+};
+
+export const deleteFile = async (
+    req: Request<undefined, any, any, { path?: string }>,
+    res: Response
+) => {
+    try {
+        const queryPath = req.query.path || "/";
+        const filePath = path.join(DataFolderPath, queryPath);
+
+        await fs.rm(filePath);
+
+        res.redirect(302, "/api/browse" + path.dirname(queryPath));
+    } catch (e) {
+        res.status(404).json({ error: (e as Error).message });
+    }
+};
+
+export const moveFile = async (
+    req: Request<undefined, any, any, { path?: string; newPath?: string }>,
+    res: Response
+) => {
+    try {
+        // const queryPath = req.query.path || "/";
+        const queryPath = decodeURI(getUrlPath(req.path));
+        const newPath = req.query.newPath || "/";
+        const filePath = path.join(DataFolderPath, queryPath);
+        const newFilePath = path.join(DataFolderPath, newPath);
+
+        await fs.rename(filePath, newFilePath);
+
+        res.redirect(302, "/api/browse" + path.dirname(newPath));
     } catch (e) {
         res.status(404).json({ error: (e as Error).message });
     }

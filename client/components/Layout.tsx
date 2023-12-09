@@ -10,9 +10,26 @@ export const Layout = ({
 }): JSX.Element => {
     return (
         <ThemeProvider theme={theme}>
-            <Box>
+            <Box
+                sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    minHeight: "100vh",
+                }}
+            >
                 <Navbar />
-                <Container maxWidth="xl" sx={{ pt: 2 }}>
+                <Container
+                    maxWidth="xl"
+                    sx={{
+                        pt: 2,
+                        // border: "4px solid red",
+                        // height: "100%",
+                        // display: "flex",
+                        // flexDirection: "column",
+                        flexGrow: 1,
+                    }}
+                >
                     {children}
                 </Container>
             </Box>
