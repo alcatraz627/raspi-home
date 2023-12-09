@@ -10,12 +10,18 @@ export const BROWSE_PREFIX = "/browse";
 const getUrlPath = (originalPath: string, prefix = BROWSE_PREFIX) =>
     originalPath.replace(prefix, "");
 
+export interface ErrorResponse {
+    error: string;
+}
+export interface ListDirResponse {
+    path: string;
+    directories: string[];
+    files: string[];
+}
+
 export const listDirContents = async (
     req: Request,
-    res: Response<
-        | { path: string; directories: string[]; files: string[] }
-        | { error: string }
-    >
+    res: Response<ListDirResponse | ErrorResponse>
 ) => {
     try {
         const queryPath = getUrlPath(req.path);
@@ -41,7 +47,10 @@ export const listDirContents = async (
     }
 };
 
-export const createDir = async (req: Request, res: Response) => {
+export const createDir = async (
+    req: Request,
+    res: Response<ListDirResponse | ErrorResponse>
+) => {
     try {
         const queryPath = getUrlPath(req.path);
         const folder = path.join(DataFolderPath, queryPath);
@@ -56,9 +65,11 @@ export const createDir = async (req: Request, res: Response) => {
     }
 };
 
+export type GetFileResponse = File;
+
 export const getFile = async (
-    req: Request<undefined, any, any, { path?: string }>,
-    res: Response<string | any | Buffer | { error: string }>
+    req: Request,
+    res: Response<GetFileResponse | ErrorResponse>
 ) => {
     try {
         const queryPath = getUrlPath(req.path);
@@ -66,6 +77,8 @@ export const getFile = async (
 
         if ((await fs.stat(filePath)).isDirectory()) {
             res.redirect(302, "/api" + req.url + "/");
+
+            return;
         }
 
         res.sendFile(filePath);

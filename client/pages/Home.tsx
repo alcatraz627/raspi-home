@@ -1,7 +1,7 @@
 import { Box, Checkbox, Container, Typography } from "@mui/material";
-import React from "react";
+import React, { FunctionComponent } from "react";
 
-export const HomePage = (): JSX.Element => {
+export const HomePage: FunctionComponent = () => {
     const todoItems: { text?: string; done?: boolean }[] = [
         { text: "csv reader/writer" },
         { text: "spreadsheet ui" },

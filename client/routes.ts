@@ -1,5 +1,5 @@
-import { HomePage } from "./pages/home";
-import { DirectoryPage } from "./pages/directory";
+import { HomePage } from "@/client/pages/home";
+import { DirectoryPage } from "@/client/pages/directory";
 
 export const RouteMap = {
     home: {
