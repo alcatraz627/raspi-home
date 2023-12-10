@@ -21,7 +21,7 @@ export const Navbar = (): JSX.Element => {
                             key={route.key}
                             variant="text"
                             color="inherit"
-                            href={route.path}
+                            href={route.getPath("")}
                             sx={{
                                 textTransform: "capitalize",
                             }}

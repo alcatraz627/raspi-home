@@ -23,10 +23,8 @@ export const Layout = ({
                     maxWidth="xl"
                     sx={{
                         pt: 2,
-                        // border: "4px solid red",
-                        // height: "100%",
-                        // display: "flex",
-                        // flexDirection: "column",
+                        display: "flex",
+                        flexDirection: "column",
                         flexGrow: 1,
                     }}
                 >

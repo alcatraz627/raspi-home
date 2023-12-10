@@ -10,7 +10,6 @@ export const RenderText = ({ fileUrl }: RenderFileProps) => {
 
     const loadFileContent = async (fileUrlProp: string) => {
         const data = await fileActions.query(fileUrlProp);
-        console.log(data);
         setContent(data.file);
     };
 

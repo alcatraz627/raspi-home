@@ -119,8 +119,6 @@ export const writeFile = async (
         });
 
         uploadEvent.on("close", () => {
-            console.log("close");
-
             res.json({ queryPath, filePath }).end();
         });
 

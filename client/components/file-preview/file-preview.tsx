@@ -2,19 +2,28 @@ import {
     AppBar,
     Box,
     Button,
+    ButtonGroup,
     Chip,
     Divider,
     InputAdornment,
     SxProps,
     TextField,
     Theme,
+    ToggleButton,
+    ToggleButtonGroup,
     Toolbar,
     Typography,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { RenderImage } from "./render-file/render-image";
 import { RenderText } from "./render-file/render-text";
-import { AddCircleOutline, Close, RestartAlt, Save } from "@mui/icons-material";
+import {
+    AddCircleOutline,
+    ArrowCircleDown,
+    Close,
+    RestartAlt,
+    Save,
+} from "@mui/icons-material";
 import { moveServerFile } from "@/client/api";
 import { NavigatePath } from "@/client/pages/directory-page";
 
@@ -60,6 +69,11 @@ export const FilePreview = ({
     rootStyle,
 }: FilePreviewProps) => {
     const fileType = guessFileType(fileUrl);
+
+    const [fileRenderer, setFileRenderer] = useState<"text" | "default">(
+        "default"
+    );
+
     const [fileNameState, setFileNameState] = useState<string>();
 
     const parsedFileName = useMemo(() => {
@@ -102,10 +116,14 @@ export const FilePreview = ({
         if (fileUrl) {
             const newParsedFileName = fileUrl.split("/").pop() || "";
             setFileNameState(newParsedFileName);
+
+            setFileRenderer("default");
         }
     }, [fileUrl]);
 
     const RenderFile = useMemo(() => {
+        if (fileRenderer === "text") return RenderText;
+
         switch (fileType) {
             case "image":
                 return RenderImage;
@@ -117,7 +135,7 @@ export const FilePreview = ({
             default:
                 return RenderText;
         }
-    }, [fileUrl]);
+    }, [fileUrl, fileRenderer]);
 
     return (
         <Box sx={{ ...rootStyle }}>
@@ -175,14 +193,47 @@ export const FilePreview = ({
                                 }}
                             />
                             <Box flexGrow={1} />
-                            <Button size="small" variant="outlined">
-                                <Close fontSize="small" />
-                                Close
-                            </Button>
-                            <Button size="small" variant="contained">
-                                <Save fontSize="small" />
-                                &nbsp; Save
-                            </Button>
+                            {(["csv", "markdown"] as FileType[]).includes(
+                                fileType
+                            ) && (
+                                <ToggleButtonGroup
+                                    exclusive
+                                    color="primary"
+                                    value={fileRenderer}
+                                    size="small"
+                                    onChange={(e, v) => {
+                                        setFileRenderer(
+                                            v as typeof fileRenderer
+                                        );
+                                    }}
+                                >
+                                    <ToggleButton value="default" size="small">
+                                        {fileType}
+                                    </ToggleButton>
+                                    <ToggleButton value="text" size="small">
+                                        text
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
+                            )}
+
+                            <ButtonGroup>
+                                <Button variant="outlined" href={fileUrl}>
+                                    <ArrowCircleDown fontSize="small" />
+                                </Button>
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => {
+                                        updateSelectedFile(null);
+                                    }}
+                                >
+                                    <Close fontSize="small" />
+                                </Button>
+                            </ButtonGroup>
+                            {true && (
+                                <Button variant="contained">
+                                    <Save fontSize="small" />
+                                </Button>
+                            )}
                         </Toolbar>
                     </AppBar>
                     <Divider />

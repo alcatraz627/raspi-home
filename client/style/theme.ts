@@ -117,5 +117,14 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiToggleButton: {
+            styleOverrides: {
+                root: {
+                    fontFamily: TitleFont,
+                    textTransform: "none",
+                    borderRadius: 1000000,
+                },
+            },
+        },
     },
 });

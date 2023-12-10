@@ -6,7 +6,7 @@ import {
 import axios from "axios";
 
 export const fetchServerDirectory = async (dirPath = "/") =>
-    (await axios.get<ListDirResponse>(`/api/browse${dirPath}`)).data;
+    (await axios.get<ListDirResponse>(`/api/browse/${dirPath}`)).data;
 
 export const fetchServerFile = async (filePath = "/") => {
     const resp = await axios.get<GetFileResponse>(`/api/browse${filePath}`, {
@@ -26,4 +26,8 @@ export const moveServerFile = async (filePath: string, newFilePath: string) => {
         }
     );
     return resp.data;
+};
+
+export const deleteServerFile = async (filePath: string): Promise<void> => {
+    await axios.delete(`/api/browse${filePath}`);
 };

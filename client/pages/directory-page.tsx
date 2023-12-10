@@ -1,29 +1,29 @@
 import { ArrowUpward, Cached } from "@mui/icons-material";
-import {
-    Box,
-    Button,
-    Chip,
-    Divider,
-    IconButton,
-    Input,
-    Typography,
-} from "@mui/material";
+import { Box, Divider, IconButton, Typography } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { fetchServerDirectory } from "../api";
+import { DirectoryPath } from "../components/directory-path/directory-path.component";
 import { DirList } from "../components/directory/dir-list";
 import { FilePreview } from "../components/file-preview/file-preview";
+import { RouteMap } from "../routes";
 import { useServerData } from "../utils/use-server-data/use-server-data";
-import { ServerBreadcrumbs } from "../components/server-breadcrumbs/server-breadcrumbs.component";
-import { DirectoryPath } from "../components/directory-path/directory-path.component";
 
 export type NavigatePath = string | ((v: string) => string) | null;
 
 export const DirectoryPage: React.FunctionComponent = () => {
-    const [pathString, setPathString] = useState<string>("");
-    const [filePathString, setFilePathString] = useState<string | null>(null);
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const [dirData, dirActions, dirStatus] =
-        useServerData(fetchServerDirectory);
+    // Will not have the leading slash
+    const pathString = location.pathname.replace("/browse/", "");
+    const setPathString = (newPath: string) => {
+        navigate(RouteMap.browse.getPath(newPath));
+    };
+
+    useEffect(() => {
+        fetchDirContents(pathString);
+    }, [pathString]);
 
     const parsedPath = useMemo(() => {
         try {
@@ -33,13 +33,13 @@ export const DirectoryPage: React.FunctionComponent = () => {
         }
     }, [pathString]);
 
+    const [filePathString, setFilePathString] = useState<string | null>(null);
+    const [dirData, dirActions, dirStatus] =
+        useServerData(fetchServerDirectory);
+
     const fetchDirContents = (path: string) => {
         dirActions.query(path);
     };
-
-    useEffect(() => {
-        fetchDirContents(pathString);
-    }, []);
 
     const handleSelectFile = (newPath: NavigatePath): void => {
         const parsedNewPath =
@@ -52,7 +52,6 @@ export const DirectoryPage: React.FunctionComponent = () => {
         const parsedNewPath =
             (typeof newPath === "function" ? newPath(pathString) : newPath) ||
             "";
-
         setPathString(parsedNewPath);
         fetchDirContents(parsedNewPath);
     };
@@ -66,7 +65,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
     };
 
     return (
-        <div>
+        <>
             <DirectoryPath
                 parsedPath={parsedPath}
                 handleSelectFolder={handleSelectFolder}
@@ -112,8 +111,6 @@ export const DirectoryPage: React.FunctionComponent = () => {
             </Box>
 
             <Divider sx={{ my: 2 }} />
-
-            {/* <pre>{JSON.stringify(filePathString)}</pre> */}
-        </div>
+        </>
     );
 };

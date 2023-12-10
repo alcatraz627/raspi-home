@@ -32,6 +32,19 @@ export const DirList: FunctionComponent<DirListProps> = ({
     files = [],
     rootStyle,
 }) => {
+    const getFullPath = (fileName: string) =>
+        pathList.join("/") + "/" + fileName;
+
+    const handleDeleteFile = (fileName: string): void => {
+        const filePath = getFullPath(fileName);
+        console.log("delete", filePath);
+    };
+
+    const handleOpenFileInNewTab = (fileName: string): void => {
+        const filePath = getFullPath(fileName);
+        window.open(filePath, "_blank");
+    };
+
     return (
         <List
             sx={{
@@ -81,16 +94,15 @@ export const DirList: FunctionComponent<DirListProps> = ({
                         <Box>
                             <IconButton
                                 edge="end"
-                                onClick={() => {
-                                    const filePath =
-                                        pathList.join("/") + "/" + f;
-                                    window.open(filePath, "_blank");
-                                }}
+                                onClick={() => handleOpenFileInNewTab(f)}
                             >
                                 <OpenInNew fontSize="small" />
                             </IconButton>
                             &nbsp;
-                            <IconButton edge="end">
+                            <IconButton
+                                edge="end"
+                                onClick={() => handleDeleteFile(f)}
+                            >
                                 <Delete fontSize="small" />
                             </IconButton>
                         </Box>
