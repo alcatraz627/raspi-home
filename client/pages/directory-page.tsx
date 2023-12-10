@@ -1,4 +1,4 @@
-import { ArrowUpward } from "@mui/icons-material";
+import { ArrowUpward, Cached } from "@mui/icons-material";
 import {
     Box,
     Button,
@@ -61,6 +61,10 @@ export const DirectoryPage: React.FunctionComponent = () => {
         handleSelectFolder([...parsedPath].slice(0, -1).join("/"));
     };
 
+    const handleRefreshFolderContents = () => {
+        fetchDirContents(pathString);
+    };
+
     return (
         <div>
             <DirectoryPath
@@ -74,6 +78,9 @@ export const DirectoryPage: React.FunctionComponent = () => {
                 Directory
                 <IconButton onClick={handleGoToParentFolder}>
                     <ArrowUpward />
+                </IconButton>
+                <IconButton onClick={handleRefreshFolderContents}>
+                    <Cached />
                 </IconButton>
             </Typography>
             <Box
@@ -98,6 +105,8 @@ export const DirectoryPage: React.FunctionComponent = () => {
                 />
                 <FilePreview
                     fileUrl={filePathString}
+                    refreshFolderContents={handleRefreshFolderContents}
+                    updateSelectedFile={handleSelectFile}
                     rootStyle={{ width: "160%" }}
                 />
             </Box>

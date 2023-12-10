@@ -14,7 +14,9 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { RenderImage } from "./render-file/render-image";
 import { RenderText } from "./render-file/render-text";
-import { AddCircleOutline, Close, Save } from "@mui/icons-material";
+import { AddCircleOutline, Close, RestartAlt, Save } from "@mui/icons-material";
+import { moveServerFile } from "@/client/api";
+import { NavigatePath } from "@/client/pages/directory-page";
 
 export type FileType = "image" | "csv" | "markdown" | "text";
 
@@ -42,28 +44,64 @@ const guessFileType = (fileName: string | null): FileType => {
 
 export interface FilePreviewProps {
     fileUrl: string | null;
+    refreshFolderContents: () => void;
     rootStyle?: SxProps<Theme>;
+    updateSelectedFile: (newPath: NavigatePath) => void;
 }
 
 export interface RenderFileProps {
     fileUrl: string;
 }
 
-export const FilePreview = ({ fileUrl, rootStyle }: FilePreviewProps) => {
+export const FilePreview = ({
+    fileUrl,
+    refreshFolderContents,
+    updateSelectedFile,
+    rootStyle,
+}: FilePreviewProps) => {
     const fileType = guessFileType(fileUrl);
-    const [fileNameState, setFileName] = useState<string>();
+    const [fileNameState, setFileNameState] = useState<string>();
 
-    const parsedFileName = (fileUrl && fileUrl.split("/").pop()) || null;
-    const isFileNameChanged = fileUrl && parsedFileName !== fileNameState;
+    const parsedFileName = useMemo(() => {
+        if (fileUrl) {
+            return fileUrl.split("/").pop() ?? null;
+        }
 
-    const handleSaveFileName = () => {
-        const isNewNameValid = !!fileNameState;
+        return null;
+    }, [fileUrl]);
+
+    const isFileNameChanged =
+        fileUrl && parsedFileName !== fileNameState?.trim();
+
+    const isNewNameValid = !!(fileNameState && fileNameState.trim().length > 0);
+
+    const handleResetFileName = () => {
+        if (parsedFileName) {
+            setFileNameState(parsedFileName);
+        }
+    };
+
+    const handleSaveFileName = async () => {
+        if (!isNewNameValid || !fileUrl) return;
+
+        const newFileUrl =
+            fileUrl?.split("/").slice(0, -1).concat(fileNameState).join("/") ||
+            "";
+
+        try {
+            await moveServerFile(fileUrl, newFileUrl);
+
+            refreshFolderContents();
+            updateSelectedFile(newFileUrl);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     useEffect(() => {
         if (fileUrl) {
             const newParsedFileName = fileUrl.split("/").pop() || "";
-            setFileName(newParsedFileName);
+            setFileNameState(newParsedFileName);
         }
     }, [fileUrl]);
 
@@ -105,13 +143,21 @@ export const FilePreview = ({ fileUrl, rootStyle }: FilePreviewProps) => {
                                 variant="standard"
                                 value={fileNameState}
                                 onChange={(e) => {
-                                    setFileName(e.target.value);
+                                    setFileNameState(e.target.value);
                                 }}
-                                error={!fileNameState}
+                                error={!isNewNameValid}
                                 InputProps={{
-                                    endAdornment:
-                                        fileNameState && isFileNameChanged ? (
-                                            <InputAdornment position="end">
+                                    endAdornment: isFileNameChanged && (
+                                        <InputAdornment position="end">
+                                            <RestartAlt
+                                                onClick={handleResetFileName}
+                                                fontSize="small"
+                                                color="primary"
+                                                sx={{
+                                                    cursor: "pointer",
+                                                }}
+                                            />
+                                            {isNewNameValid && (
                                                 <Save
                                                     onClick={handleSaveFileName}
                                                     fontSize="small"
@@ -120,8 +166,12 @@ export const FilePreview = ({ fileUrl, rootStyle }: FilePreviewProps) => {
                                                         cursor: "pointer",
                                                     }}
                                                 />
-                                            </InputAdornment>
-                                        ) : null,
+                                            )}
+                                        </InputAdornment>
+                                    ),
+                                    onBlur: () => {
+                                        setFileNameState((v) => v?.trim());
+                                    },
                                 }}
                             />
                             <Box flexGrow={1} />

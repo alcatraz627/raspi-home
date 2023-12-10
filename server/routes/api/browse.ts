@@ -146,9 +146,14 @@ export const deleteFile = async (
     }
 };
 
+export interface MoveFileResponse {
+    from: string;
+    to: string;
+}
+
 export const moveFile = async (
-    req: Request<undefined, any, any, { path?: string; newPath?: string }>,
-    res: Response
+    req: Request<undefined, any, any, { newPath?: string }>,
+    res: Response<MoveFileResponse | ErrorResponse>
 ) => {
     try {
         // const queryPath = req.query.path || "/";
@@ -159,7 +164,7 @@ export const moveFile = async (
 
         await fs.rename(filePath, newFilePath);
 
-        res.redirect(302, "/api/browse" + path.dirname(newPath));
+        res.json({ from: queryPath, to: newPath }).end();
     } catch (e) {
         res.status(400).json({ error: (e as Error).message });
     }
