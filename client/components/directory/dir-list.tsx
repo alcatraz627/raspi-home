@@ -1,4 +1,10 @@
-import { Delete, InsertDriveFile, OpenInNew } from "@mui/icons-material";
+import {
+    AddCircle,
+    AddCircleOutline,
+    Delete,
+    InsertDriveFile,
+    OpenInNew,
+} from "@mui/icons-material";
 import {
     Box,
     Divider,
@@ -11,6 +17,8 @@ import {
 import { FunctionComponent } from "react";
 import { DirListItem, DirListItemProps } from "./dir-list-item";
 import { NavigatePath } from "@/client/pages/directory-page";
+import { useServerData } from "@/client/utils/use-server-data/use-server-data";
+import { createServerFile, deleteServerFile } from "@/client/api";
 
 export interface DirListProps {
     pathList: string[];
@@ -22,6 +30,7 @@ export interface DirListProps {
     selectFile: (newPath: NavigatePath) => void;
 
     rootStyle?: SxProps<Theme>;
+    refreshFolderContents: () => void;
 }
 
 export const DirList: FunctionComponent<DirListProps> = ({
@@ -29,20 +38,28 @@ export const DirList: FunctionComponent<DirListProps> = ({
     folders = [],
     selectFile,
     selectFolder,
+    refreshFolderContents,
     files = [],
     rootStyle,
 }) => {
     const getFullPath = (fileName: string) =>
         pathList.join("/") + "/" + fileName;
 
-    const handleDeleteFile = (fileName: string): void => {
+    const handleDeleteFile = async (fileName: string): Promise<void> => {
         const filePath = getFullPath(fileName);
-        console.log("delete", filePath);
+        await deleteServerFile(filePath);
+        refreshFolderContents();
     };
 
     const handleOpenFileInNewTab = (fileName: string): void => {
         const filePath = getFullPath(fileName);
         window.open(filePath, "_blank");
+    };
+
+    const handleCreateFile = async () => {
+        const NEW_FILE_NAME = Date.now() + ".txt";
+        await createServerFile(getFullPath(NEW_FILE_NAME));
+        refreshFolderContents();
     };
 
     return (
@@ -109,6 +126,14 @@ export const DirList: FunctionComponent<DirListProps> = ({
                     }
                 />
             ))}
+
+            <DirListItem
+                avatarVariant="circular"
+                avatarBgColor="primary.light"
+                primaryElement={"New File"}
+                primaryAction={handleCreateFile}
+                PrimaryIcon={AddCircleOutline}
+            />
         </List>
     );
 };

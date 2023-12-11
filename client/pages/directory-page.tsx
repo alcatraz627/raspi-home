@@ -94,6 +94,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
                     folders={dirData?.directories || []}
                     selectFile={handleSelectFile}
                     selectFolder={handleSelectFolder}
+                    refreshFolderContents={handleRefreshFolderContents}
                     files={dirData?.files || []}
                     rootStyle={{ width: "40%" }}
                 />

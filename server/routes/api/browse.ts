@@ -104,36 +104,68 @@ export const fileUploadScreen = (
     ).end();
 };
 
-export const writeFile = async (
+export interface CreateFileResponse {
+    path: string;
+}
+
+export const createFile = async (
     req: Request<undefined, any, any, { path?: string }>,
-    res: Response
+    res: Response<CreateFileResponse | ErrorResponse>
 ) => {
     try {
-        const queryPath = req.query.path || "/";
+        // TODO: Add Content
+        const queryPath = decodeURI(getUrlPath(req.path));
         const filePath = path.join(DataFolderPath, queryPath);
 
-        const uploadEvent = busboy({ headers: req.headers });
+        const fileHandle = await fs.open(filePath, "w");
 
-        uploadEvent.on("file", (name, file, info) => {
-            fs.writeFile(filePath, file, { encoding: "utf-8" });
-        });
+        await fileHandle.close();
 
-        uploadEvent.on("close", () => {
-            res.json({ queryPath, filePath }).end();
-        });
-
-        req.pipe(uploadEvent);
+        res.status(201).json({ path: queryPath }).end();
     } catch (e) {
+        console.log("error", e);
         res.status(400).json({ error: (e as Error).message });
     }
 };
+
+// export const writeFile = async (
+//     req: Request<undefined, any, any, { path?: string }>,
+//     res: Response<WriteFileResponse | ErrorResponse>
+// ) => {
+//     try {
+//         // const queryPath = req.query.path || "/";
+//         const queryPath = decodeURI(getUrlPath(req.path));
+//         const filePath = path.join(DataFolderPath, queryPath);
+
+//         // res.json({ queryPath, filePath }).end();
+
+//         const uploadEvent = busboy({ headers: req.headers });
+
+//         uploadEvent.on("file", (name, file, info) => {
+//             fs.writeFile(filePath, file || "", { encoding: "utf-8" });
+//         });
+
+//         uploadEvent.on("close", () => {
+//             res.json({ queryPath, filePath }).end();
+//         });
+
+//         uploadEvent.on("error", (err) => {
+//             res.json({ error: "Whoops" }).end();
+//         });
+
+//         req.pipe(uploadEvent);
+//     } catch (e) {
+//         console.log("error", e);
+//         res.status(400).json({ error: (e as Error).message });
+//     }
+// };
 
 export const deleteFile = async (
     req: Request<undefined, any, any, { path?: string }>,
     res: Response
 ) => {
     try {
-        const queryPath = req.query.path || "/";
+        const queryPath = decodeURI(getUrlPath(req.path));
         const filePath = path.join(DataFolderPath, queryPath);
 
         await fs.rm(filePath);
@@ -154,7 +186,6 @@ export const moveFile = async (
     res: Response<MoveFileResponse | ErrorResponse>
 ) => {
     try {
-        // const queryPath = req.query.path || "/";
         const queryPath = decodeURI(getUrlPath(req.path));
         const newPath = req.query.newPath || "/";
         const filePath = path.join(DataFolderPath, queryPath);

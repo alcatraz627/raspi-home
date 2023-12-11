@@ -7,11 +7,16 @@ import { RenderFileProps } from "../file-preview";
 export const RenderText = ({ fileUrl }: RenderFileProps) => {
     const [fileData, fileActions, fileStatus] = useServerData(fetchServerFile);
     const [content, setContent] = useState<string | null>(null);
+    const [contentState, setContentState] = useState<string | null>(null);
 
     const loadFileContent = async (fileUrlProp: string) => {
         const data = await fileActions.query(fileUrlProp);
         setContent(data.file);
     };
+
+    useEffect(() => {
+        setContent(contentState);
+    }, [contentState]);
 
     useEffect(() => {
         if (fileUrl) {
@@ -24,8 +29,16 @@ export const RenderText = ({ fileUrl }: RenderFileProps) => {
             {fileStatus.isLoading && <CircularProgress />}
             {fileStatus.isError && <div>Error</div>}
 
-            {fileStatus.isSuccess && content && (
-                <TextField fullWidth multiline rows={12} value={content} />
+            {fileStatus.isSuccess && (
+                <TextField
+                    fullWidth
+                    multiline
+                    rows={12}
+                    value={contentState}
+                    onChange={(e) => {
+                        setContentState(e.target.value);
+                    }}
+                />
             )}
         </Box>
     );

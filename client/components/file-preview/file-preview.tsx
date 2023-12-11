@@ -217,7 +217,10 @@ export const FilePreview = ({
                             )}
 
                             <ButtonGroup>
-                                <Button variant="outlined" href={fileUrl}>
+                                <Button
+                                    variant="outlined"
+                                    href={"/api/browse/" + fileUrl}
+                                >
                                     <ArrowCircleDown fontSize="small" />
                                 </Button>
                                 <Button
