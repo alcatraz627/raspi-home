@@ -5,7 +5,7 @@ import {
     FsObject,
 } from "@/server/routes/api/constants";
 import { ListDirResponse } from "@/server/routes/api/interfaces";
-import { getFsServerUrl } from "@/server/routes/api/utils";
+import { getFsServerUrl } from "@/server/routes/api/constants";
 import axios from "axios";
 
 const getApiUrl = (

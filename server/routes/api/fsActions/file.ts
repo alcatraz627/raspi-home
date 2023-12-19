@@ -4,7 +4,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { FsAction, FsObject } from "../constants";
 import { FsActionHandler, FsRequestHandler } from "../interfaces";
-import { DataFolderPath, TrashFolderPath, getFsServerUrl } from "../utils";
+import { DataFolderPath, TrashFolderPath } from "../utils";
+import { getFsServerUrl } from "../constants";
 
 export const readFile: FsActionHandler = async (req, res) => {
     const { path: filePath } = req.query;
