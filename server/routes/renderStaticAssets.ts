@@ -22,12 +22,14 @@ export const renderStaticAssets = async (server: Express) => {
 
     server.use(viteServer.middlewares);
 
-    server.get("*", renderFrontEnd(viteServer));
+    // server.use("favicon.ico", express.static("static/favicon.png"));
+    // server.use("favicon.png", express.static("static/favicon.png"));
 
     server.use(express.static("static"));
     server.use(express.static("dist"));
     server.use(express.static("data"));
-    // server.use("favicon.ico", express.static("favicon.png"));
+
+    server.get("*", renderFrontEnd(viteServer));
 };
 
 export const renderFrontEnd =

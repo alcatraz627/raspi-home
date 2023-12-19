@@ -9,26 +9,31 @@ export const Navbar = (): JSX.Element => {
                 <Toolbar>
                     <Typography
                         variant="h6"
-                        component="div"
+                        component="a"
                         sx={{
                             flexGrow: 1,
+                            textDecoration: "none",
+                            color: "primary.contrastText",
                         }}
+                        href={RouteMap.home.getPath()}
                     >
                         Chopra Ras-pi Home
                     </Typography>
-                    {Object.values(RouteMap).map((route) => (
-                        <Button
-                            key={route.key}
-                            variant="text"
-                            color="inherit"
-                            href={route.getPath("")}
-                            sx={{
-                                textTransform: "capitalize",
-                            }}
-                        >
-                            {route.key}
-                        </Button>
-                    ))}
+                    {Object.values(RouteMap)
+                        .reverse()
+                        .map((route) => (
+                            <Button
+                                key={route.key}
+                                variant="text"
+                                color="inherit"
+                                href={route.getPath("")}
+                                sx={{
+                                    textTransform: "capitalize",
+                                }}
+                            >
+                                {route.key}
+                            </Button>
+                        ))}
                 </Toolbar>
             </AppBar>
         </Box>

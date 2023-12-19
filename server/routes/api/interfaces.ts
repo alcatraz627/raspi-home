@@ -6,11 +6,6 @@ export interface ErrorResponse {
     error: string;
     value?: string;
 }
-export interface ListDirResponse {
-    path: string;
-    directories: string[];
-    files: string[];
-}
 
 // Handler
 export interface FsHandlerPathParams {

@@ -4,20 +4,41 @@ import React, { FunctionComponent } from "react";
 export interface TodoItem {
     text?: string;
     done?: boolean;
+    children?: TodoItem[];
 }
 
 export const HomePage: FunctionComponent = () => {
-    const todoItems: (TodoItem & { children?: TodoItem[] })[] = [
+    const todoItems: TodoItem[] = [
         {
-            text: "csv reader/writer",
+            text: "utils",
             children: [
-                { text: "drag and drop file upload" },
-                { text: "create / delete folders" },
-                { text: "text editor" },
+                { text: "toast provider notif" },
+                { text: "error handling" },
+                { text: "modal as promise" },
             ],
         },
-        { text: "spreadsheet ui" },
-        { text: "file editor" },
+        {
+            text: "file explorer",
+            children: [
+                { text: "drag and drop file upload" },
+                { text: "soft delete" },
+                { text: "mobile compatible" },
+                { text: "modal as promise" },
+            ],
+        },
+        {
+            text: "markdown editor",
+            children: [
+                { text: "view / edit mode" },
+                { text: "live edit" },
+                { text: "tags" },
+                { text: "searching" },
+            ],
+        },
+        {
+            text: "csv reader/writer",
+            children: [{ text: "spreadsheet ui" }],
+        },
         {
             text: "deployment",
         },
@@ -42,7 +63,7 @@ export const HomePage: FunctionComponent = () => {
                     {t.children &&
                         t.children.map((c) => (
                             <Box
-                                key={t.text}
+                                key={c.text}
                                 sx={{
                                     display: "flex",
                                     alignItems: "center",
@@ -51,7 +72,7 @@ export const HomePage: FunctionComponent = () => {
                             >
                                 <Checkbox checked={t.done} />
                                 <Typography variant="body1">
-                                    {t.text}
+                                    {c.text}
                                 </Typography>
                             </Box>
                         ))}

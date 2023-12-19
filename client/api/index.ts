@@ -4,7 +4,6 @@ import {
     FsAction,
     FsObject,
 } from "@/server/routes/api/constants";
-import { ListDirResponse } from "@/server/routes/api/interfaces";
 import { getFsServerUrl } from "@/server/routes/api/constants";
 import axios from "axios";
 
@@ -27,9 +26,11 @@ const getApiUrl = (
 // Folder methods
 export const readServerDirectory = async (dirPath = "") =>
     (
-        await axios.get<ListDirResponse>(
-            getApiUrl(FsAction.Read, FsObject.Folder, dirPath)
-        )
+        await axios.get<{
+            path: string;
+            folders: string[];
+            files: string[];
+        }>(getApiUrl(FsAction.Read, FsObject.Folder, dirPath))
     ).data;
 
 export const createServerDirectory = async (dirPath: string) =>
@@ -44,7 +45,7 @@ export const renameServerDirectory = async (
     newDirPath: string
 ) =>
     (
-        await axios.post<{ path: string; newPath: string }>(
+        await axios.put<{ path: string; newPath: string }>(
             getApiUrl(FsAction.Rename, FsObject.Folder, dirPath, newDirPath)
         )
     ).data;
@@ -82,8 +83,11 @@ export const updateServerFile = async (filePath: string, content: string) => {
     return resp.data;
 };
 
-export const moveServerFile = async (filePath: string, newFilePath: string) => {
-    const resp = await axios.patch<{ path: string; newPath: string }>(
+export const renameServerFile = async (
+    filePath: string,
+    newFilePath: string
+) => {
+    const resp = await axios.put<{ path: string; newPath: string }>(
         getApiUrl(FsAction.Rename, FsObject.File, filePath, newFilePath)
     );
     return resp.data;

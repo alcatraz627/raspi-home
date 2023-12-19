@@ -24,7 +24,7 @@ import {
     RestartAlt,
     Save,
 } from "@mui/icons-material";
-import { moveServerFile } from "@/client/api";
+import { renameServerFile } from "@/client/api";
 import { NavigatePath } from "@/client/pages/directory-page";
 
 export type FileType = "image" | "csv" | "markdown" | "text";
@@ -56,6 +56,7 @@ export interface FilePreviewProps {
     refreshFolderContents: () => void;
     rootStyle?: SxProps<Theme>;
     updateSelectedFile: (newPath: NavigatePath) => void;
+    createNewFile: () => void;
 }
 
 export interface RenderFileProps {
@@ -66,6 +67,7 @@ export const FilePreview = ({
     fileUrl,
     refreshFolderContents,
     updateSelectedFile,
+    createNewFile,
     rootStyle,
 }: FilePreviewProps) => {
     const fileType = guessFileType(fileUrl);
@@ -103,7 +105,7 @@ export const FilePreview = ({
             "";
 
         try {
-            await moveServerFile(fileUrl, newFileUrl);
+            await renameServerFile(fileUrl, newFileUrl);
 
             refreshFolderContents();
             updateSelectedFile(newFileUrl);
@@ -255,7 +257,11 @@ export const FilePreview = ({
                     <Typography variant="body1" color="gray">
                         No file selected
                         <br />
-                        <Button sx={{ mt: 1 }} variant="outlined">
+                        <Button
+                            sx={{ mt: 1 }}
+                            variant="outlined"
+                            onClick={createNewFile}
+                        >
                             <AddCircleOutline />
                             &nbsp; Create a file
                         </Button>

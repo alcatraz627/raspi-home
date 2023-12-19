@@ -96,7 +96,7 @@ export const deleteFile: FsActionHandler = async (req, res) => {
     try {
         await fs.rename(fullPath, trashedPath);
     } catch (error) {
-        await fs.rmdir(fullPath);
+        await fs.rm(fullPath);
     }
 
     return res.status(201).json({ path: filePath }).end();
@@ -104,7 +104,7 @@ export const deleteFile: FsActionHandler = async (req, res) => {
 
 const handlerMethodMap: Record<FsAction, [HttpMethods, FsActionHandler]> = {
     [FsAction.Read]: [HttpMethods.GET, readFile],
-    [FsAction.Rename]: [HttpMethods.POST, renameFile],
+    [FsAction.Rename]: [HttpMethods.PUT, renameFile],
     [FsAction.Create]: [HttpMethods.POST, createFile],
     [FsAction.Update]: [HttpMethods.PATCH, updateFile],
     [FsAction.Delete]: [HttpMethods.DELETE, deleteFile],

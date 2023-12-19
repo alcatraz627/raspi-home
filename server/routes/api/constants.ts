@@ -26,7 +26,7 @@ export const getFsServerUrl = ({
     fsAction,
     fsObject,
     prefixes = [API_PREFIX, BROWSE_PREFIX],
-    queryPath,
+    queryPath = "",
     otherParams = {},
 }: {
     fsAction: FsAction;
@@ -38,16 +38,14 @@ export const getFsServerUrl = ({
     let serverUrlPrefix = ["", ...prefixes, fsObject, fsAction, ""].join("/");
 
     const queryParams = new URLSearchParams(otherParams);
-    if (queryPath) {
-        const resolvedPath = queryPath.startsWith("/")
-            ? queryPath.slice(1)
-            : queryPath;
+    const resolvedPath = queryPath.startsWith("/")
+        ? queryPath.slice(1)
+        : queryPath;
 
-        queryParams.append("path", resolvedPath);
-    }
+    queryParams.append("path", resolvedPath);
 
     if (queryParams.toString()) {
-        serverUrlPrefix += `&${queryParams.toString()}`;
+        serverUrlPrefix += `?${queryParams.toString()}`;
     }
 
     return serverUrlPrefix;

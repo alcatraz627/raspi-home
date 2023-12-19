@@ -2,6 +2,7 @@ import {
     AddCircle,
     AddCircleOutline,
     Delete,
+    Edit,
     InsertDriveFile,
     OpenInNew,
 } from "@mui/icons-material";
@@ -18,7 +19,12 @@ import { FunctionComponent } from "react";
 import { DirListItem, DirListItemProps } from "./dir-list-item";
 import { NavigatePath } from "@/client/pages/directory-page";
 import { useServerData } from "@/client/utils/use-server-data/use-server-data";
-import { createServerFile, deleteServerFile } from "@/client/api";
+import {
+    createServerFile,
+    deleteServerDirectory,
+    deleteServerFile,
+    renameServerDirectory,
+} from "@/client/api";
 
 export interface DirListProps {
     pathList: string[];
@@ -43,11 +49,33 @@ export const DirList: FunctionComponent<DirListProps> = ({
     rootStyle,
 }) => {
     const getFullPath = (fileName: string) =>
-        pathList.join("/") + "/" + fileName;
+        pathList.concat(fileName).join("/");
 
     const handleDeleteFile = async (fileName: string): Promise<void> => {
+        if (!confirm(`Delete this file ${fileName}?`)) return;
+
         const filePath = getFullPath(fileName);
         await deleteServerFile(filePath);
+
+        refreshFolderContents();
+    };
+
+    const handleDeleteFolder = async (folderName: string): Promise<void> => {
+        if (!confirm(`Delete this folder ${folderName}?`)) return;
+
+        const filePath = getFullPath(folderName);
+        await deleteServerDirectory(filePath);
+        refreshFolderContents();
+    };
+
+    const handleRenameFolder = async (folderName: string): Promise<void> => {
+        const folderPath = getFullPath(folderName);
+
+        const newFolderName = prompt("New Folder Name", folderName);
+        if (!newFolderName || newFolderName === folderName) return;
+        const newFolderPath = getFullPath(newFolderName);
+
+        await renameServerDirectory(folderPath, newFolderPath);
         refreshFolderContents();
     };
 
@@ -57,8 +85,10 @@ export const DirList: FunctionComponent<DirListProps> = ({
     };
 
     const handleCreateFile = async () => {
-        const NEW_FILE_NAME = Date.now() + ".txt";
-        await createServerFile(getFullPath(NEW_FILE_NAME));
+        const newFileName = prompt("New File Name", Date.now() + ".txt");
+        if (!newFileName) return;
+
+        await createServerFile(getFullPath(newFileName));
         refreshFolderContents();
     };
 
@@ -89,9 +119,21 @@ export const DirList: FunctionComponent<DirListProps> = ({
                         selectFolder((p) => p + "/" + dir);
                     }}
                     secondaryAction={
-                        <IconButton edge="end">
-                            <Delete fontSize="small" />
-                        </IconButton>
+                        <Box>
+                            <IconButton
+                                edge="end"
+                                onClick={() => handleRenameFolder(dir)}
+                            >
+                                <Edit fontSize="small" />
+                            </IconButton>
+                            &nbsp;
+                            <IconButton
+                                edge="end"
+                                onClick={() => handleDeleteFolder(dir)}
+                            >
+                                <Delete fontSize="small" />
+                            </IconButton>
+                        </Box>
                     }
                 />
             ))}

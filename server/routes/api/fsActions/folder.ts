@@ -82,7 +82,7 @@ export const deleteFolder: FsActionHandler = async (req, res) => {
 
 const handlerMethodMap: Record<FsAction, [HttpMethods, FsActionHandler]> = {
     [FsAction.Read]: [HttpMethods.GET, listFolder],
-    [FsAction.Rename]: [HttpMethods.POST, renameFolder],
+    [FsAction.Rename]: [HttpMethods.PUT, renameFolder],
     [FsAction.Create]: [HttpMethods.POST, createFolder],
     [FsAction.Update]: [HttpMethods.PATCH, updateFolder],
     [FsAction.Delete]: [HttpMethods.DELETE, deleteFolder],

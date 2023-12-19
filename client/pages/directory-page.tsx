@@ -1,8 +1,19 @@
-import { ArrowUpward, Cached, CreateNewFolder } from "@mui/icons-material";
+import {
+    ArrowUpward,
+    Cached,
+    CreateNewFolder,
+    Edit,
+} from "@mui/icons-material";
 import { Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createServerDirectory, readServerDirectory } from "../api";
+import {
+    createServerDirectory,
+    createServerFile,
+    readServerDirectory,
+    renameServerDirectory,
+    renameServerFile,
+} from "../api";
 import { DirectoryPath } from "../components/directory-path/directory-path.component";
 import { DirList } from "../components/directory/dir-list";
 import { FilePreview } from "../components/file-preview/file-preview";
@@ -32,6 +43,12 @@ export const DirectoryPage: React.FunctionComponent = () => {
             return [""];
         }
     }, [pathString]);
+
+    const getFullPath = (fileName: string) =>
+        parsedPath.concat(fileName).join("/");
+
+    const currentFolderName =
+        parsedPath?.[parsedPath.length - 1] || "Root Folder";
 
     const [filePathString, setFilePathString] = useState<string | null>(null);
     const [dirData, dirActions, dirStatus] = useServerData(readServerDirectory);
@@ -68,9 +85,38 @@ export const DirectoryPage: React.FunctionComponent = () => {
 
         if (!folderName) return;
 
-        const newFolderPath = [...parsedPath, folderName].join("/");
+        const newFolderPath = parsedPath.concat(folderName).join("/");
         const resp = await createServerDirectory(newFolderPath);
         console.log(resp);
+
+        handleRefreshFolderContents();
+    };
+
+    const handleRenameFolder = async () => {
+        if (!pathString) return;
+        const newFolderName = prompt(
+            "Enter new folder name",
+            currentFolderName
+        );
+
+        if (!newFolderName || newFolderName === pathString) return;
+
+        const oldFolderPath = parsedPath.join("/");
+        const newFolderPath = parsedPath
+            .slice(0, -1)
+            .concat(newFolderName)
+            .join("/");
+        await renameServerFile(oldFolderPath, newFolderPath);
+        handleSelectFolder(newFolderPath);
+
+        handleRefreshFolderContents();
+    };
+
+    const handleCreateFile = async () => {
+        const newFileName = prompt("Enter new file name", Date.now() + ".txt");
+        if (!newFileName) return;
+
+        await createServerFile(getFullPath(newFileName));
 
         handleRefreshFolderContents();
     };
@@ -85,23 +131,41 @@ export const DirectoryPage: React.FunctionComponent = () => {
             <Divider sx={{ my: 2 }} />
 
             <Typography variant="h4" sx={{ pl: 3 }}>
-                Directory
-                <Tooltip title="Go to parent folder">
-                    <IconButton onClick={handleGoToParentFolder}>
-                        <ArrowUpward />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title="Refresh folder contents">
-                    <IconButton onClick={handleRefreshFolderContents}>
-                        <Cached />
+                {currentFolderName}
+            </Typography>
+            <Box sx={{ pl: 3 }}>
+                <Tooltip title="Edit Dir Name">
+                    <IconButton
+                        onClick={handleRenameFolder}
+                        size="small"
+                        disabled={!pathString}
+                    >
+                        <Edit fontSize="small" />
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="Create new folder">
-                    <IconButton onClick={handleCreateFolder}>
-                        <CreateNewFolder />
+                    <IconButton onClick={handleCreateFolder} size="small">
+                        <CreateNewFolder fontSize="small" />
                     </IconButton>
                 </Tooltip>
-            </Typography>
+                <Tooltip title="Go to parent folder">
+                    <IconButton
+                        onClick={handleGoToParentFolder}
+                        size="small"
+                        disabled={!pathString}
+                    >
+                        <ArrowUpward fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Refresh folder contents">
+                    <IconButton
+                        onClick={handleRefreshFolderContents}
+                        size="small"
+                    >
+                        <Cached fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            </Box>
             <Box
                 display="flex"
                 width="100%"
@@ -111,7 +175,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
             >
                 <DirList
                     pathList={parsedPath}
-                    folders={dirData?.directories || []}
+                    folders={dirData?.folders || []}
                     selectFile={handleSelectFile}
                     selectFolder={handleSelectFolder}
                     refreshFolderContents={handleRefreshFolderContents}
@@ -127,6 +191,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
                     fileUrl={filePathString}
                     refreshFolderContents={handleRefreshFolderContents}
                     updateSelectedFile={handleSelectFile}
+                    createNewFile={handleCreateFile}
                     rootStyle={{ width: "160%" }}
                 />
             </Box>
