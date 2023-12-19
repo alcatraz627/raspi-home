@@ -1,8 +1,8 @@
-import { ArrowUpward, Cached } from "@mui/icons-material";
-import { Box, Divider, IconButton, Typography } from "@mui/material";
+import { ArrowUpward, Cached, CreateNewFolder } from "@mui/icons-material";
+import { Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { fetchServerDirectory } from "../api";
+import { createServerDirectory, readServerDirectory } from "../api";
 import { DirectoryPath } from "../components/directory-path/directory-path.component";
 import { DirList } from "../components/directory/dir-list";
 import { FilePreview } from "../components/file-preview/file-preview";
@@ -34,8 +34,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
     }, [pathString]);
 
     const [filePathString, setFilePathString] = useState<string | null>(null);
-    const [dirData, dirActions, dirStatus] =
-        useServerData(fetchServerDirectory);
+    const [dirData, dirActions, dirStatus] = useServerData(readServerDirectory);
 
     const fetchDirContents = (path: string) => {
         dirActions.query(path);
@@ -64,6 +63,18 @@ export const DirectoryPage: React.FunctionComponent = () => {
         fetchDirContents(pathString);
     };
 
+    const handleCreateFolder = async () => {
+        const folderName = prompt("Enter folder name", "Other");
+
+        if (!folderName) return;
+
+        const newFolderPath = [...parsedPath, folderName].join("/");
+        const resp = await createServerDirectory(newFolderPath);
+        console.log(resp);
+
+        handleRefreshFolderContents();
+    };
+
     return (
         <>
             <DirectoryPath
@@ -75,12 +86,21 @@ export const DirectoryPage: React.FunctionComponent = () => {
 
             <Typography variant="h4" sx={{ pl: 3 }}>
                 Directory
-                <IconButton onClick={handleGoToParentFolder}>
-                    <ArrowUpward />
-                </IconButton>
-                <IconButton onClick={handleRefreshFolderContents}>
-                    <Cached />
-                </IconButton>
+                <Tooltip title="Go to parent folder">
+                    <IconButton onClick={handleGoToParentFolder}>
+                        <ArrowUpward />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Refresh folder contents">
+                    <IconButton onClick={handleRefreshFolderContents}>
+                        <Cached />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Create new folder">
+                    <IconButton onClick={handleCreateFolder}>
+                        <CreateNewFolder />
+                    </IconButton>
+                </Tooltip>
             </Typography>
             <Box
                 display="flex"

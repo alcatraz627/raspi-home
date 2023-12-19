@@ -1,24 +1,11 @@
 import { Router } from "express";
-import {
-    BROWSE_PREFIX,
-    createDir,
-    createFile,
-    deleteFile,
-    fileUploadScreen,
-    getFile,
-    listDirContents,
-    moveFile,
-} from "./browse";
+import { BrowseRouterUrlPattern } from "./constants";
+import { browseHandler, fileUploadScreen, fsErrorHandler } from "./fsActions";
 
 const apiRouter = Router({ strict: true, caseSensitive: true });
 
-apiRouter.route(`${BROWSE_PREFIX}*/`).get(listDirContents).post(createDir);
-apiRouter
-    .route(`${BROWSE_PREFIX}*`)
-    .get(getFile)
-    .post(createFile)
-    .patch(moveFile)
-    .delete(deleteFile);
+apiRouter.use(BrowseRouterUrlPattern, browseHandler);
+apiRouter.use(fsErrorHandler);
 
 // Testing only
 apiRouter.use("/upload/", fileUploadScreen);

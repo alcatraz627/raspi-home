@@ -1,11 +1,11 @@
-import { fetchServerFile } from "@/client/api";
+import { readServerFile } from "@/client/api";
 import { useServerData } from "@/client/utils/use-server-data/use-server-data";
 import { Box, CircularProgress, TextField } from "@mui/material";
 import { useState, useEffect } from "react";
 import { RenderFileProps } from "../file-preview";
 
 export const RenderText = ({ fileUrl }: RenderFileProps) => {
-    const [fileData, fileActions, fileStatus] = useServerData(fetchServerFile);
+    const [fileData, fileActions, fileStatus] = useServerData(readServerFile);
     const [content, setContent] = useState<string | null>(null);
     const [contentState, setContentState] = useState<string | null>(null);
 

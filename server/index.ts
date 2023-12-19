@@ -8,9 +8,9 @@ const PORT = 3000;
 const initServer = async () => {
     const server = express();
 
-    server.use("/api", apiRouter);
-
     renderStaticAssets(server);
+
+    server.use("/api", apiRouter);
 
     server.listen(PORT, () => {
         console.log(`Server is listening on port: ${PORT}`);
