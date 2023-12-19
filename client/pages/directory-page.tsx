@@ -11,7 +11,6 @@ import {
     createServerDirectory,
     createServerFile,
     readServerDirectory,
-    renameServerDirectory,
     renameServerFile,
 } from "../api";
 import { DirectoryPath } from "../components/directory-path/directory-path.component";

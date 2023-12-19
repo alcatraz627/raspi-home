@@ -140,7 +140,7 @@ export const FilePreview = ({
     }, [fileUrl, fileRenderer]);
 
     return (
-        <Box sx={{ ...rootStyle }}>
+        <Box sx={{ pt: 1, ...rootStyle }}>
             {fileUrl ? (
                 <>
                     <AppBar
@@ -234,15 +234,12 @@ export const FilePreview = ({
                                     <Close fontSize="small" />
                                 </Button>
                             </ButtonGroup>
-                            {true && (
-                                <Button variant="contained">
-                                    <Save fontSize="small" />
-                                </Button>
-                            )}
                         </Toolbar>
                     </AppBar>
                     <Divider />
-                    <RenderFile fileUrl={fileUrl} />
+                    <Box width="100%">
+                        <RenderFile fileUrl={fileUrl} />
+                    </Box>
                 </>
             ) : (
                 <Box
