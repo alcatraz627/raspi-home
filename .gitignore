@@ -2,5 +2,6 @@ node_modules
 .env
 dist
 data
+trash
 
 .DS_Store
