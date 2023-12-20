@@ -1,6 +1,6 @@
 import { NavigatePath } from "@/client/pages/directory-page";
 import { Box, Chip } from "@mui/material";
-import { FunctionComponent } from "react";
+import { Fragment, FunctionComponent } from "react";
 
 export interface ServerBreadcrumbsProps {
     parsedPath: string[];
@@ -33,7 +33,7 @@ export const ServerBreadcrumbs: FunctionComponent<ServerBreadcrumbsProps> = ({
             />
             /
             {parsedPath.map((p, i) => (
-                <>
+                <Fragment key={i}>
                     <Chip
                         label={p}
                         variant="outlined"
@@ -42,7 +42,7 @@ export const ServerBreadcrumbs: FunctionComponent<ServerBreadcrumbsProps> = ({
                         onClick={() => handleSelectFolderAtIndex(i)}
                     />
                     /
-                </>
+                </Fragment>
             ))}
         </Box>
     );
