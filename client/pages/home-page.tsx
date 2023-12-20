@@ -1,5 +1,6 @@
-import { Box, Checkbox, Container, Typography } from "@mui/material";
-import React, { FunctionComponent } from "react";
+import { Box, Button, Checkbox, Typography } from "@mui/material";
+import { FunctionComponent } from "react";
+import { useNotify } from "../utils/use-notify/notify-provider.component";
 
 export interface TodoItem {
     text?: string;
@@ -8,6 +9,7 @@ export interface TodoItem {
 }
 
 export const HomePage: FunctionComponent = () => {
+    const { notify } = useNotify();
     const todoItems: TodoItem[] = [
         {
             text: "utils",
@@ -47,6 +49,17 @@ export const HomePage: FunctionComponent = () => {
     return (
         <Box>
             <Typography variant="h4">To Do</Typography>
+
+            <Button
+                onClick={() => {
+                    notify({
+                        title: "hello",
+                        message: Date.now().toString(),
+                    });
+                }}
+            >
+                Show notif
+            </Button>
 
             {todoItems.map((t) => (
                 <>
