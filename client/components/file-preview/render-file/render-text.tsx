@@ -4,6 +4,7 @@ import { Box, Button, CircularProgress, TextField } from "@mui/material";
 import { useState, useEffect, KeyboardEventHandler } from "react";
 import { RenderFileProps } from "../file-preview";
 import { Clear, Save } from "@mui/icons-material";
+import { MDEditor } from "../../md-editor/md-editor.component";
 
 export const RenderText = ({ fileUrl }: RenderFileProps) => {
     const [fileData, fileActions, fileStatus] = useServerData(readServerFile);
@@ -12,7 +13,6 @@ export const RenderText = ({ fileUrl }: RenderFileProps) => {
 
     const loadFileContent = async (fileUrlProp: string) => {
         const data = await fileActions.query(fileUrlProp);
-        console.log(data);
         setContent(data.file);
     };
     const handleUpdateFile = async () => {
@@ -29,6 +29,8 @@ export const RenderText = ({ fileUrl }: RenderFileProps) => {
             handleUpdateFile();
         }
     };
+
+    const isMarkdown = fileUrl.endsWith(".md") || fileUrl.endsWith(".mdx");
 
     useEffect(() => {
         setContentState(content);
@@ -49,24 +51,32 @@ export const RenderText = ({ fileUrl }: RenderFileProps) => {
 
     return (
         <>
-            <TextField
-                fullWidth
-                multiline
-                rows={12}
-                value={contentState}
-                onChange={(e) => {
-                    setContentState(e.target.value);
-                }}
-                onKeyDown={handleKeyDown}
-                InputProps={{
-                    sx: {
-                        fontFamily: "monospace!important",
-                        fontSize: 16,
-                        bgcolor: "#333",
-                        color: "primary.contrastText",
-                    },
-                }}
-            />
+            {isMarkdown ? (
+                <MDEditor
+                    value={contentState || ""}
+                    onKeyDown={handleKeyDown}
+                    onChange={(val) => setContentState(val)}
+                />
+            ) : (
+                <TextField
+                    fullWidth
+                    multiline
+                    rows={12}
+                    value={contentState || ""}
+                    onChange={(e) => {
+                        setContentState(e.target.value);
+                    }}
+                    onKeyDown={handleKeyDown}
+                    InputProps={{
+                        sx: {
+                            fontFamily: "monospace!important",
+                            fontSize: 16,
+                            bgcolor: "#333",
+                            color: "primary.contrastText",
+                        },
+                    }}
+                />
+            )}
             <Box display="flex" justifyContent="space-between" py={2} gap={2}>
                 <Box flexGrow={1} />
                 <Button
