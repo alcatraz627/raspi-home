@@ -1,5 +1,12 @@
 import {
-    AddCircle,
+    createServerFile,
+    deleteServerDirectory,
+    deleteServerFile,
+    renameServerDirectory,
+} from "@/client/api";
+import { NavigatePath } from "@/client/pages/directory-page";
+import { useNotify } from "@/client/utils/use-notify/notify-provider.component";
+import {
     AddCircleOutline,
     Delete,
     Edit,
@@ -8,6 +15,7 @@ import {
 } from "@mui/icons-material";
 import {
     Box,
+    Button,
     Divider,
     IconButton,
     List,
@@ -16,15 +24,7 @@ import {
     Typography,
 } from "@mui/material";
 import { FunctionComponent } from "react";
-import { DirListItem, DirListItemProps } from "./dir-list-item";
-import { NavigatePath } from "@/client/pages/directory-page";
-import { useServerData } from "@/client/utils/use-server-data/use-server-data";
-import {
-    createServerFile,
-    deleteServerDirectory,
-    deleteServerFile,
-    renameServerDirectory,
-} from "@/client/api";
+import { DirListItem } from "./dir-list-item";
 
 export interface DirListProps {
     pathList: string[];
@@ -48,6 +48,8 @@ export const DirList: FunctionComponent<DirListProps> = ({
     files = [],
     rootStyle,
 }) => {
+    const { notify } = useNotify();
+
     const getFullPath = (fileName: string) =>
         pathList.concat(fileName).join("/");
 
@@ -58,6 +60,7 @@ export const DirList: FunctionComponent<DirListProps> = ({
         await deleteServerFile(filePath);
 
         refreshFolderContents();
+        notify({ message: `${fileName} deleted` });
     };
 
     const handleDeleteFolder = async (folderName: string): Promise<void> => {
@@ -66,6 +69,8 @@ export const DirList: FunctionComponent<DirListProps> = ({
         const filePath = getFullPath(folderName);
         await deleteServerDirectory(filePath);
         refreshFolderContents();
+
+        notify({ message: `${folderName} deleted` });
     };
 
     const handleRenameFolder = async (folderName: string): Promise<void> => {
@@ -77,6 +82,8 @@ export const DirList: FunctionComponent<DirListProps> = ({
 
         await renameServerDirectory(folderPath, newFolderPath);
         refreshFolderContents();
+
+        notify({ message: `${folderName} renamed to ${newFolderName}` });
     };
 
     const handleOpenFileInNewTab = (fileName: string): void => {
@@ -90,6 +97,8 @@ export const DirList: FunctionComponent<DirListProps> = ({
 
         await createServerFile(getFullPath(newFileName));
         refreshFolderContents();
+
+        notify({ message: `${newFileName} created` });
     };
 
     return (
