@@ -1,17 +1,15 @@
 import { FsActionHandler } from "../routes/api/interfaces";
 import { HttpMethods } from "./constants";
 
+/**
+ * Use `?m=POST` to override the http method
+ */
 export const ensureMethod =
     (
         req: Parameters<FsActionHandler>[0],
         res: Parameters<FsActionHandler>[1]
     ) =>
     (method: HttpMethods = HttpMethods.POST) => {
-        console.log([req.method, req.query.m], method, [
-            req.method === method,
-            req.query.m === method,
-        ]);
-
         if (req.query.m && req.query.m === method) return;
 
         if (req.method == method) return;
