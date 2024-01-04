@@ -11,10 +11,15 @@ module.exports = {
     parser: "@typescript-eslint/parser",
     plugins: ["react-refresh", "react-hooks", "prettier"],
     rules: {
-        "eqeqeq": "error",
-        // "format-on-save": ""
+        eqeqeq: "error",
+        quotes: ["error", "double"],
+        semi: ["warn", "always"],
+
+        "format-on-save": "on",
         "no-unused-vars": "on",
-        "unused-imports/no-unused-imports": "error",
+        "unused-imports/no-unused-imports": "on",
+        "@typescript-eslint/no-unused-vars": "on",
+        "unused-imports/no-unused-imports-ts": "on",
         "unused-imports/no-unused-vars": [
             "warn",
             {

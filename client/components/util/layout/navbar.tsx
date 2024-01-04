@@ -1,30 +1,24 @@
-import React, { useEffect, useState } from "react";
+import { RouteKey, RouteMap } from "@/client/routes";
+import { useIsMobile, useMounted } from "@/client/utils/hooks";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
     AppBar,
     Box,
     Button,
     IconButton,
-    Menu,
-    MenuPaper,
-    SwipeableDrawer,
     Toolbar,
     Typography,
 } from "@mui/material";
-import { RouteMap } from "../../../routes";
 import { useGlobal } from "../../../utils/use-global/use-global";
-import MenuIcon from "@mui/icons-material/Menu";
 
 export const Navbar = (): JSX.Element => {
     const {
         values: { isDrawerOpen = false },
         setValue,
     } = useGlobal();
+    const isMobile = useIsMobile();
 
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
+    const isMounted = useMounted();
 
     const setIsDrawerOpen = (o: boolean) => setValue("isDrawerOpen", o);
 
@@ -32,15 +26,18 @@ export const Navbar = (): JSX.Element => {
         <Box>
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        onClick={() => setIsDrawerOpen(true)}
-                        edge="start"
-                    >
-                        {isMounted && <MenuIcon />}
-                    </IconButton>
+                    {isMounted && isMobile && (
+                        <IconButton
+                            color="inherit"
+                            onClick={() => setIsDrawerOpen(true)}
+                            edge="start"
+                            size="small"
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                    )}
                     <Typography
-                        variant="h6"
+                        variant={isMobile ? "body2" : "h6"}
                         component="a"
                         sx={{
                             flexGrow: 1,
@@ -49,10 +46,11 @@ export const Navbar = (): JSX.Element => {
                         }}
                         href={RouteMap.home.getPath()}
                     >
-                        Chopra Ras-pi Home
+                        Ras-pi Home
                     </Typography>
                     {Object.values(RouteMap)
                         .reverse()
+                        .filter((route) => route.key !== RouteKey.home)
                         .map((route) => (
                             <Button
                                 key={route.key}
@@ -62,6 +60,7 @@ export const Navbar = (): JSX.Element => {
                                 sx={{
                                     textTransform: "capitalize",
                                 }}
+                                size={isMobile ? "small" : "medium"}
                             >
                                 {route.key}
                             </Button>

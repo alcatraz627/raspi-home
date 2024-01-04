@@ -15,7 +15,6 @@ import {
 } from "@mui/icons-material";
 import {
     Box,
-    Button,
     Divider,
     IconButton,
     List,
@@ -28,14 +27,11 @@ import { DirectoryListItem } from "./directory-list-item";
 
 export interface DirectoryListProps {
     pathList: string[];
-
-    folders: string[];
-    selectFolder: (newPath: NavigatePath) => void;
-
-    files: string[];
-    selectFile: (newPath: NavigatePath) => void;
-
     rootStyle?: SxProps<Theme>;
+    folders: string[];
+    files: string[];
+    selectFolder: (newPath: NavigatePath) => void;
+    selectFile: (newPath: NavigatePath) => void;
     refreshFolderContents: () => void;
 }
 

@@ -1,17 +1,4 @@
-import {
-    ArrowUpward,
-    Cached,
-    CreateNewFolder,
-    Edit,
-} from "@mui/icons-material";
-import {
-    Box,
-    Divider,
-    IconButton,
-    SwipeableDrawer,
-    Tooltip,
-    Typography,
-} from "@mui/material";
+import { Box, Divider, SwipeableDrawer } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -20,18 +7,30 @@ import {
     readServerDirectory,
     renameServerFile,
 } from "../api";
-import { DirectoryPathBreadcrumbs } from "../components/directory/directory-path-breadcrumbs/directory-path.component";
-import { DirectoryList } from "../components/directory/directory-list/directory-list";
-import { FilePreview } from "../components/files/file-preview";
+import { DirectoryPathBreadcrumbs } from "../components/directory/directory-path-breadcrumbs.component";
+import {
+    DirectoryList,
+    DirectoryListProps,
+} from "../components/directory/directory-list/directory-list";
+import {
+    FilePreview,
+    FilePreviewProps,
+} from "../components/files/file-preview";
 import { RouteMap } from "../routes";
 import { useServerData } from "../utils/use-server-data/use-server-data";
 import { useGlobal } from "../utils/use-global/use-global";
+import {
+    DirectoryTitle,
+    DirectoryTitleProps,
+} from "../components/directory/directory-title.component";
+import { useIsMobile } from "../utils/hooks";
 
 export type NavigatePath = string | ((v: string) => string) | null;
 
 export const DirectoryPage: React.FunctionComponent = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const isMobile = useIsMobile();
 
     const {
         values: { isDrawerOpen },
@@ -41,7 +40,9 @@ export const DirectoryPage: React.FunctionComponent = () => {
     const setIsDrawerOpen = (o: boolean) => setValue("isDrawerOpen", o);
 
     // Will not have the leading slash
-    const pathString = location.pathname.replace("/browse/", "");
+    const pathString = decodeURIComponent(
+        location.pathname.replace("/browse/", "")
+    );
     const setPathString = (newPath: string) => {
         navigate(RouteMap.browse.getPath(newPath));
     };
@@ -61,13 +62,15 @@ export const DirectoryPage: React.FunctionComponent = () => {
     const getFullPath = (fileName: string) =>
         parsedPath.concat(fileName).join("/");
 
-    const currentFolderName =
-        parsedPath?.[parsedPath.length - 1] || "Root Folder";
+    const currentFolderName = decodeURIComponent(
+        parsedPath?.[parsedPath.length - 1] || "Root Folder"
+    );
 
     const [filePathString, setFilePathString] = useState<string | null>(null);
-    const [dirData, dirActions, dirStatus] = useServerData(readServerDirectory);
+    const [dirData, dirActions] = useServerData(readServerDirectory);
 
     const fetchDirContents = (path: string) => {
+        console.log(path);
         dirActions.query(path);
     };
 
@@ -101,7 +104,6 @@ export const DirectoryPage: React.FunctionComponent = () => {
 
         const newFolderPath = parsedPath.concat(folderName).join("/");
         const resp = await createServerDirectory(newFolderPath);
-        console.log(resp);
 
         handleRefreshFolderContents();
     };
@@ -135,105 +137,81 @@ export const DirectoryPage: React.FunctionComponent = () => {
         handleRefreshFolderContents();
     };
 
-    return (
-        <>
-            <SwipeableDrawer
-                anchor="left"
-                open={isDrawerOpen}
-                onOpen={() => setIsDrawerOpen(true)}
-                onClose={() => setIsDrawerOpen(false)}
-            >
-                Drawer Contents
-                <Typography variant="h4" sx={{ pl: 3 }}>
-                    {currentFolderName}
-                </Typography>
-                <Box sx={{ pl: 3 }}>
-                    <Tooltip title="Edit Dir Name">
-                        <IconButton
-                            onClick={handleRenameFolder}
-                            size="small"
-                            disabled={!pathString}
-                        >
-                            <Edit fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Create new folder">
-                        <IconButton onClick={handleCreateFolder} size="small">
-                            <CreateNewFolder fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Go to parent folder">
-                        <IconButton
-                            onClick={handleGoToParentFolder}
-                            size="small"
-                            disabled={!pathString}
-                        >
-                            <ArrowUpward fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Refresh folder contents">
-                        <IconButton
-                            onClick={handleRefreshFolderContents}
-                            size="small"
-                        >
-                            <Cached fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
-                </Box>
-                <DirectoryList
-                    pathList={parsedPath}
-                    folders={dirData?.folders || []}
-                    selectFile={handleSelectFile}
-                    selectFolder={handleSelectFolder}
-                    refreshFolderContents={handleRefreshFolderContents}
-                    files={dirData?.files || []}
-                    rootStyle={{ width: "40%" }}
-                />
-            </SwipeableDrawer>
+    const directoryTitleProps: DirectoryTitleProps = {
+        currentFolderName,
+        pathString,
+        handleCreateFolder,
+        handleGoToParentFolder,
+        handleRefreshFolderContents,
+        handleRenameFolder,
+    };
 
+    const directoryListProps: DirectoryListProps = {
+        pathList: parsedPath,
+        folders: dirData?.folders || [],
+        selectFile: handleSelectFile,
+        selectFolder: handleSelectFolder,
+        refreshFolderContents: handleRefreshFolderContents,
+        files: dirData?.files || [],
+        rootStyle: {},
+    };
+
+    const filePreviewProps: FilePreviewProps = {
+        fileUrl: filePathString,
+        refreshFolderContents: handleRefreshFolderContents,
+        updateSelectedFile: handleSelectFile,
+        createNewFile: handleCreateFile,
+
+        rootStyle: {},
+    };
+
+    if (isMobile) {
+        return (
+            <>
+                <div>
+                    <SwipeableDrawer
+                        anchor="left"
+                        open={isDrawerOpen}
+                        onOpen={() => setIsDrawerOpen(true)}
+                        onClose={() => setIsDrawerOpen(false)}
+                    >
+                        <Box pt={isMobile ? 2 : 3}>
+                            <DirectoryPathBreadcrumbs
+                                parsedPath={parsedPath}
+                                handleSelectFolder={handleSelectFolder}
+                            />
+                            <DirectoryTitle {...directoryTitleProps} />
+                        </Box>
+                        <DirectoryList
+                            {...directoryListProps}
+                            rootStyle={{
+                                width: "clamp(100px, 70vw, 300px)",
+                            }}
+                        />
+                    </SwipeableDrawer>
+                </div>
+                <FilePreview {...filePreviewProps} />
+                {!filePathString && (
+                    <>
+                        <Box py={2}>
+                            <Divider sx={{ mx: -2, my: 0 }} />
+                        </Box>
+                        <DirectoryTitle {...directoryTitleProps} />
+                        <DirectoryList {...directoryListProps} />
+                    </>
+                )}
+            </>
+        );
+    }
+
+    return (
+        <Box>
             <DirectoryPathBreadcrumbs
                 parsedPath={parsedPath}
                 handleSelectFolder={handleSelectFolder}
             />
-
             <Divider sx={{ my: 2 }} />
-
-            <Typography variant="h4" sx={{ pl: 3 }}>
-                {currentFolderName}
-            </Typography>
-            <Box sx={{ pl: 3 }}>
-                <Tooltip title="Edit Dir Name">
-                    <IconButton
-                        onClick={handleRenameFolder}
-                        size="small"
-                        disabled={!pathString}
-                    >
-                        <Edit fontSize="small" />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title="Create new folder">
-                    <IconButton onClick={handleCreateFolder} size="small">
-                        <CreateNewFolder fontSize="small" />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title="Go to parent folder">
-                    <IconButton
-                        onClick={handleGoToParentFolder}
-                        size="small"
-                        disabled={!pathString}
-                    >
-                        <ArrowUpward fontSize="small" />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title="Refresh folder contents">
-                    <IconButton
-                        onClick={handleRefreshFolderContents}
-                        size="small"
-                    >
-                        <Cached fontSize="small" />
-                    </IconButton>
-                </Tooltip>
-            </Box>
+            <DirectoryTitle {...directoryTitleProps} />
             <Box
                 display="flex"
                 width="100%"
@@ -242,12 +220,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
                 flexGrow={1}
             >
                 <DirectoryList
-                    pathList={parsedPath}
-                    folders={dirData?.folders || []}
-                    selectFile={handleSelectFile}
-                    selectFolder={handleSelectFolder}
-                    refreshFolderContents={handleRefreshFolderContents}
-                    files={dirData?.files || []}
+                    {...directoryListProps}
                     rootStyle={{ width: "40%" }}
                 />
                 <Divider
@@ -256,15 +229,11 @@ export const DirectoryPage: React.FunctionComponent = () => {
                     sx={{ mr: 4, mt: 1 }}
                 />
                 <FilePreview
-                    fileUrl={filePathString}
-                    refreshFolderContents={handleRefreshFolderContents}
-                    updateSelectedFile={handleSelectFile}
-                    createNewFile={handleCreateFile}
+                    {...filePreviewProps}
                     rootStyle={{ width: "160%" }}
                 />
             </Box>
-
             <Divider sx={{ my: 2 }} />
-        </>
+        </Box>
     );
 };

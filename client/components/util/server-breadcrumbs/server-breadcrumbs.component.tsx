@@ -1,4 +1,5 @@
 import { NavigatePath } from "@/client/pages/directory-page";
+import { useIsMobile } from "@/client/utils/hooks";
 import { Box, Chip } from "@mui/material";
 import { Fragment, FunctionComponent } from "react";
 
@@ -11,6 +12,8 @@ export const ServerBreadcrumbs: FunctionComponent<ServerBreadcrumbsProps> = ({
     parsedPath,
     selectFolder,
 }) => {
+    const isMobile = useIsMobile();
+
     const handleSelectFolderAtIndex = (idx: number) => {
         const newPath = "/" + parsedPath.slice(0, idx + 1).join("/");
         selectFolder(newPath);
@@ -22,12 +25,16 @@ export const ServerBreadcrumbs: FunctionComponent<ServerBreadcrumbsProps> = ({
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
+                ...(isMobile && {
+                    flexWrap: "wrap",
+                    mb: 2,
+                }),
             }}
         >
             <Chip
                 label="Server"
                 variant="filled"
-                sx={{ mx: 0.5, my: 1 }}
+                sx={{ mx: 0.5, my: isMobile ? 0.5 : 1 }}
                 size="small"
                 onClick={() => selectFolder("")}
             />
@@ -35,9 +42,9 @@ export const ServerBreadcrumbs: FunctionComponent<ServerBreadcrumbsProps> = ({
             {parsedPath.map((p, i) => (
                 <Fragment key={i}>
                     <Chip
-                        label={p}
+                        label={decodeURIComponent(p)}
                         variant="outlined"
-                        sx={{ mx: 0.5, my: 1 }}
+                        sx={{ mx: 0.5, my: isMobile ? 0.5 : 1 }}
                         size="small"
                         onClick={() => handleSelectFolderAtIndex(i)}
                     />

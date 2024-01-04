@@ -1,6 +1,11 @@
 import { createContext, useContext, useState } from "react";
 
+// TODO: Move to utils
 export type ValueOf<T> = T[keyof T];
+
+const initialState: GlobalContextState = {
+    isDrawerOpen: true,
+};
 
 export type GlobalContextState = {
     isDrawerOpen: boolean;
@@ -13,10 +18,6 @@ export interface UseGlobalReturn {
         val: ValueOf<GlobalContextState>
     ) => void;
 }
-
-const initialState: GlobalContextState = {
-    isDrawerOpen: false,
-};
 
 export const GlobalContext = createContext<UseGlobalReturn | null>(null);
 

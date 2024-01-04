@@ -1,7 +1,6 @@
 import { Folder } from "@mui/icons-material";
 import {
     Avatar,
-    IconButton,
     ListItem,
     ListItemAvatar,
     ListItemButton,
@@ -10,9 +9,10 @@ import {
 } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { FunctionComponent, ReactNode } from "react";
+import { truncate } from "../../util/utils";
 
 export interface DirectoryListItemProps {
-    primaryElement?: ReactNode;
+    primaryElement?: string | ReactNode;
     helperElement?: ReactNode;
 
     PrimaryIcon?: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
@@ -49,7 +49,10 @@ export const DirectoryListItem: FunctionComponent<DirectoryListItemProps> = ({
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                    primary={primaryElement}
+                    title={
+                        typeof primaryElement === "string" ? primaryElement : ""
+                    }
+                    primary={truncate(primaryElement)}
                     secondary={helperElement}
                 />
             </ListItemButton>
