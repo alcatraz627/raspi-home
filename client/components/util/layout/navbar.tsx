@@ -1,12 +1,44 @@
-import React from "react";
-import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
-import { RouteMap } from "../routes";
+import React, { useEffect, useState } from "react";
+import {
+    AppBar,
+    Box,
+    Button,
+    IconButton,
+    Menu,
+    MenuPaper,
+    SwipeableDrawer,
+    Toolbar,
+    Typography,
+} from "@mui/material";
+import { RouteMap } from "../../../routes";
+import { useGlobal } from "../../../utils/use-global/use-global";
+import MenuIcon from "@mui/icons-material/Menu";
 
 export const Navbar = (): JSX.Element => {
+    const {
+        values: { isDrawerOpen = false },
+        setValue,
+    } = useGlobal();
+
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    const setIsDrawerOpen = (o: boolean) => setValue("isDrawerOpen", o);
+
     return (
         <Box>
             <AppBar position="static">
                 <Toolbar>
+                    <IconButton
+                        color="inherit"
+                        onClick={() => setIsDrawerOpen(true)}
+                        edge="start"
+                    >
+                        {isMounted && <MenuIcon />}
+                    </IconButton>
                     <Typography
                         variant="h6"
                         component="a"

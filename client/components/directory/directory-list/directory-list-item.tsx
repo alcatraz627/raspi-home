@@ -11,7 +11,7 @@ import {
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { FunctionComponent, ReactNode } from "react";
 
-export interface DirListItemProps {
+export interface DirectoryListItemProps {
     primaryElement?: ReactNode;
     helperElement?: ReactNode;
 
@@ -23,7 +23,7 @@ export interface DirListItemProps {
     secondaryAction?: ReactNode;
 }
 
-export const DirListItem: FunctionComponent<DirListItemProps> = ({
+export const DirectoryListItem: FunctionComponent<DirectoryListItemProps> = ({
     primaryElement,
     helperElement,
     primaryAction,

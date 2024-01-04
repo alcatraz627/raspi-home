@@ -24,9 +24,9 @@ import {
     Typography,
 } from "@mui/material";
 import { FunctionComponent } from "react";
-import { DirListItem } from "./dir-list-item";
+import { DirectoryListItem } from "./directory-list-item";
 
-export interface DirListProps {
+export interface DirectoryListProps {
     pathList: string[];
 
     folders: string[];
@@ -39,7 +39,7 @@ export interface DirListProps {
     refreshFolderContents: () => void;
 }
 
-export const DirList: FunctionComponent<DirListProps> = ({
+export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
     pathList,
     folders = [],
     selectFile,
@@ -121,7 +121,7 @@ export const DirList: FunctionComponent<DirListProps> = ({
                 </Typography>
             )}
             {folders.map((dir) => (
-                <DirListItem
+                <DirectoryListItem
                     key={dir}
                     primaryElement={dir}
                     primaryAction={() => {
@@ -150,7 +150,7 @@ export const DirList: FunctionComponent<DirListProps> = ({
             <Divider />
 
             {files.map((f) => (
-                <DirListItem
+                <DirectoryListItem
                     key={f}
                     avatarVariant="circular"
                     primaryElement={f}
@@ -178,7 +178,7 @@ export const DirList: FunctionComponent<DirListProps> = ({
                 />
             ))}
 
-            <DirListItem
+            <DirectoryListItem
                 avatarVariant="circular"
                 avatarBgColor="primary.light"
                 primaryElement={"New File"}

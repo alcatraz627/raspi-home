@@ -15,8 +15,8 @@ import {
     Typography,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import { RenderImage } from "./render-file/render-image";
-import { RenderText } from "./render-file/render-text";
+import { RenderImage } from "./file-type-renders/render-image";
+import { RenderText } from "./file-type-renders/render-text";
 import {
     AddCircleOutline,
     ArrowCircleDown,

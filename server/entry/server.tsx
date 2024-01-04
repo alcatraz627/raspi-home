@@ -4,7 +4,7 @@ import {
     StaticRouterProvider,
     StaticRouterProviderProps,
 } from "react-router-dom/server";
-import { Layout } from "../../client/components/layout";
+import { Layout } from "../../client/components/util/layout/parent";
 
 export function render({
     router,

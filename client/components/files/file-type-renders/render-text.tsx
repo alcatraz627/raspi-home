@@ -4,7 +4,7 @@ import { Box, Button, CircularProgress, TextField } from "@mui/material";
 import { useState, useEffect, KeyboardEventHandler } from "react";
 import { RenderFileProps } from "../file-preview";
 import { Clear, Save } from "@mui/icons-material";
-import { MDEditor } from "../../md-editor/md-editor.component";
+import { MDEditor } from "./md-editor/md-editor.component";
 
 export const RenderText = ({ fileUrl }: RenderFileProps) => {
     const [fileData, fileActions, fileStatus] = useServerData(readServerFile);

@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import dts from "vite-plugin-dts";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,7 +10,7 @@ export default defineConfig({
             "@": __dirname,
         },
     },
-    plugins: [react()],
+    plugins: [react(), dts({ tsconfigPath: "./tsconfig.json" })],
     build: {
         lib: {
             entry: path.resolve(__dirname, "client/index.tsx"),
