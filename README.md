@@ -4,9 +4,14 @@
 - Update node version from `.nvmrc`
 - Install packages with `npm install`
 - Run dev server with `npm run dev`
-- Build server with `npm run build && npm run serve`
-- [ ] TODO: Deployment to raspi
+- Build and run server with `npm run build && npm run start`
+- [x] TODO: Deployment to raspi
 - [ ] ESLint + Prettier
+
+
+#### Todos
+- [ ] Drag n drop files to upload
+- [ ] Markdown editor improvements
 
 ### Goal
 
