@@ -1,10 +1,10 @@
-import { HttpMethods } from "@/server/utils/constants";
-import { ensureMethod } from "@/server/utils/middleware";
+import { HttpMethods } from "@/server/utils/constants.ts";
+import { ensureMethod } from "@/server/utils/middleware.ts";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { FsAction, FsObject } from "../constants";
-import { FsActionHandler, FsRequestHandler } from "../interfaces";
-import { DataFolderPath, TrashFolderPath } from "../utils";
+import { FsAction, FsObject } from "../constants.ts";
+import { FsActionHandler, FsRequestHandler } from "../interfaces.ts";
+import { DataFolderPath, TrashFolderPath } from "../utils.ts";
 
 export const listFolder: FsActionHandler = async (req, res) => {
     const { path: folderPath } = req.query;

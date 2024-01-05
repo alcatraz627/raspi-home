@@ -1,6 +1,5 @@
 import { createTheme } from "@mui/material/styles";
 import { green, pink, red } from "@mui/material/colors";
-import { Variant } from "@mui/material/styles/createTypography";
 
 const TitleFont = "Comfortaa, sans-serif";
 const TextFont = "Open Sans, sans-serif";

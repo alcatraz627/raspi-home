@@ -1,9 +1,9 @@
 import { Box } from "@mui/material";
 import { RenderFileProps } from "../file-preview";
 import {
+    getFsServerUrl,
     FsAction,
     FsObject,
-    getFsServerUrl,
 } from "@/server/routes/api/constants";
 
 export const RenderImage = ({ fileUrl }: RenderFileProps) => {
