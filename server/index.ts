@@ -3,7 +3,7 @@ import { renderStaticAssets } from "@/server/routes/renderStaticAssets";
 import express from "express";
 import "module-alias/register";
 
-const PORT = 3000;
+const PORT = 3001;
 const IP = "0.0.0.0";
 
 const initServer = async () => {

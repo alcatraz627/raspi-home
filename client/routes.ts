@@ -1,10 +1,7 @@
-import { DirectoryPage } from "@/client/pages/directory-page";
-import { HomePage } from "@/client/pages/home-page";
 import { Home, SdStorage, SvgIconComponent } from "@mui/icons-material";
-import { SvgIconTypeMap } from "@mui/material";
-import { OverridableComponent } from "@mui/material/OverridableComponent";
-import { ReactNode } from "react";
 import { RouteObject } from "react-router-dom";
+import { DirectoryPage } from "./pages/directory-page";
+import { HomePage } from "./pages/home-page";
 
 // const ServerPath = "@path";
 

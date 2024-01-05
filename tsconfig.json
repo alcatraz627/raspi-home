@@ -1,30 +1,39 @@
 {
     "compilerOptions": {
-        "target": "ESNext",
-        "module": "commonjs",
-        "outDir": "./dist",
-        "strict": true,
-        "esModuleInterop": true,
+        "target": "ES2020",
+        "useDefineForClassFields": true,
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "module": "ESNext",
         "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "jsx": "react-jsx",
-        "noEmit": true,
+
+        /* Bundler mode */
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "resolveJsonModule": true,
         "isolatedModules": true,
-        "pretty": true,
-        "alwaysStrict": true,
-        // "noUnusedLocals": true,
-        // "noUnusedParameters": true,
-        // "noFallthroughCasesInSwitch": true
+        "noEmit": true,
+        "jsx": "react-jsx",
+
+        "esModuleInterop": true,
+
+        /* Linting */
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
         "baseUrl": ".",
         "paths": {
-            "@": ["."],
             "@/*": ["./*"]
         }
     },
-    "include": ["**/*.ts", "**/*.tsx", "vite.config.ts"],
-    "references": [{ "path": "./tsconfig.node.json" }],
+    "include": ["client"],
     "exclude": ["node_modules"],
+    "references": [{ "path": "./tsconfig.node.json" }],
     "ts-node": {
-        "require": ["tsconfig-paths/register"]
+        "require": ["tsconfig-paths/register"],
+        "esm": true,
+        "compilerOptions": {
+            "module": "NodeNext"
+        }
     }
 }

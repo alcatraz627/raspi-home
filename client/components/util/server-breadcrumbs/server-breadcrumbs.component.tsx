@@ -1,7 +1,7 @@
-import { NavigatePath } from "@/client/pages/directory-page";
-import { useIsMobile } from "@/client/utils/hooks";
 import { Box, Chip } from "@mui/material";
 import { Fragment, FunctionComponent } from "react";
+import { NavigatePath } from "../../../pages/directory-page";
+import { useIsMobile } from "../../../utils/hooks";
 
 export interface ServerBreadcrumbsProps {
     parsedPath: string[];

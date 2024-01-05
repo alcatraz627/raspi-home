@@ -13,14 +13,14 @@ import { createFetchRequest } from "../utils/httpToFetchRequest";
 const routeHandler = createStaticHandler(routes);
 
 export const renderStaticAssets = async (server: Express) => {
-    const viteServer = await createViteServer({
-        server: {
-            middlewareMode: true,
-        },
-        appType: "custom",
-    });
+    // const viteServer = await createViteServer({
+    //     server: {
+    //         middlewareMode: true,
+    //     },
+    //     appType: "custom",
+    // });
 
-    server.use(viteServer.middlewares);
+    // server.use(viteServer.middlewares);
 
     // server.use("favicon.ico", express.static("static/favicon.png"));
     // server.use("favicon.png", express.static("static/favicon.png"));
@@ -29,7 +29,7 @@ export const renderStaticAssets = async (server: Express) => {
     server.use(express.static("dist"));
     server.use(express.static("data"));
 
-    server.get("*", renderFrontEnd(viteServer));
+    // server.get("*", renderFrontEnd(viteServer));
 };
 
 export const renderFrontEnd =
