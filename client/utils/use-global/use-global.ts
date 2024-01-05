@@ -1,23 +1,6 @@
 import { createContext, useContext, useState } from "react";
-
-// TODO: Move to utils
-export type ValueOf<T> = T[keyof T];
-
-const initialState: GlobalContextState = {
-    isDrawerOpen: true,
-};
-
-export type GlobalContextState = {
-    isDrawerOpen: boolean;
-} & Record<string, any>;
-
-export interface UseGlobalReturn {
-    values: GlobalContextState;
-    setValue: (
-        key: keyof GlobalContextState,
-        val: ValueOf<GlobalContextState>
-    ) => void;
-}
+import { GlobalContextState, UseGlobalReturn } from "./use-global.types";
+import { initialState } from "./initial-state";
 
 export const GlobalContext = createContext<UseGlobalReturn | null>(null);
 

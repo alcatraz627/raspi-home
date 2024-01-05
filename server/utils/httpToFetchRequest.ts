@@ -1,4 +1,4 @@
-import { Request } from "express";
+import type { Request } from "express";
 
 export const createFetchRequest = (req: Request) => {
     let origin = `${req.protocol}://${req.get("host")}`;

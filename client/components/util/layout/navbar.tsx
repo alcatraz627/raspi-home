@@ -7,18 +7,30 @@ import {
     Button,
     IconButton,
     Toolbar,
+    Tooltip,
     Typography,
 } from "@mui/material";
 import { useGlobal } from "../../../utils/use-global/use-global";
+import { useMemo } from "react";
 
 export const Navbar = (): JSX.Element => {
-    const {
-        values: { isDrawerOpen = false },
-        setValue,
-    } = useGlobal();
+    const { setValue } = useGlobal();
     const isMobile = useIsMobile();
-
     const isMounted = useMounted();
+    const currentPath = useMemo(() => {
+        if (!isMounted) return null;
+
+        let initialPath = window.location.pathname;
+        if (!initialPath.endsWith("/")) {
+            initialPath += "/";
+        }
+
+        const match = Object.values(RouteMap).find(({ getPath }) =>
+            initialPath.startsWith(getPath(""))
+        );
+
+        return match;
+    }, [isMounted]);
 
     const setIsDrawerOpen = (o: boolean) => setValue("isDrawerOpen", o);
 
@@ -26,21 +38,22 @@ export const Navbar = (): JSX.Element => {
         <Box>
             <AppBar position="static">
                 <Toolbar>
-                    {isMounted && isMobile && (
-                        <IconButton
-                            color="inherit"
-                            onClick={() => setIsDrawerOpen(true)}
-                            edge="start"
-                            size="small"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                    )}
+                    {isMounted &&
+                        isMobile &&
+                        currentPath?.pageOptions?.showDrawer && (
+                            <IconButton
+                                color="inherit"
+                                onClick={() => setIsDrawerOpen(true)}
+                                edge="start"
+                                size="small"
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                        )}
                     <Typography
                         variant={isMobile ? "body2" : "h6"}
                         component="a"
                         sx={{
-                            flexGrow: 1,
                             textDecoration: "none",
                             color: "primary.contrastText",
                         }}
@@ -48,23 +61,36 @@ export const Navbar = (): JSX.Element => {
                     >
                         Ras-pi Home
                     </Typography>
+                    <Box flexGrow={1} />
                     {Object.values(RouteMap)
                         .reverse()
                         .filter((route) => route.key !== RouteKey.home)
-                        .map((route) => (
-                            <Button
-                                key={route.key}
-                                variant="text"
-                                color="inherit"
-                                href={route.getPath("")}
-                                sx={{
-                                    textTransform: "capitalize",
-                                }}
-                                size={isMobile ? "small" : "medium"}
-                            >
-                                {route.key}
-                            </Button>
-                        ))}
+                        .map(({ Icon, key, getPath }) =>
+                            isMobile && Icon ? (
+                                <Tooltip key={key} title={key}>
+                                    <IconButton
+                                        color="inherit"
+                                        size="small"
+                                        href={getPath("")}
+                                    >
+                                        <Icon fontSize="small" />
+                                    </IconButton>
+                                </Tooltip>
+                            ) : (
+                                <Button
+                                    key={key}
+                                    variant="text"
+                                    color="inherit"
+                                    href={getPath("")}
+                                    sx={{
+                                        textTransform: "capitalize",
+                                    }}
+                                    startIcon={Icon ? <Icon /> : null}
+                                >
+                                    {isMobile ? null : key}
+                                </Button>
+                            )
+                        )}
                 </Toolbar>
             </AppBar>
         </Box>
