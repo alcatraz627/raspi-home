@@ -8,7 +8,7 @@ import {
     UseServerDataRequest,
     UseServerDataResponse,
     Status,
-} from "./use-server-data.interfaces";
+} from "./use-server-data.types";
 
 /**
  * A hook to fetch data from the server and manage it locally.

@@ -9,7 +9,7 @@ import React, {
 import {
     CreatedNotification,
     NotifyContextProps,
-} from "./notify-provider.interfaces";
+} from "./notify-provider.types";
 
 export const NotifyContext = React.createContext<NotifyContextProps>(
     {} as NotifyContextProps
