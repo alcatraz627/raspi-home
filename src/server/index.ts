@@ -1,9 +1,10 @@
-import { apiRouter } from "@/server/routes/api/api";
-import { renderStaticAssets } from "@/server/routes/renderStaticAssets";
+import { apiRouter } from "@/server/routes/api/api.ts";
+import { renderStaticAssets } from "@/server/routes/renderStaticAssets.ts";
 import express from "express";
-import "module-alias/register";
+import ViteExpress from "vite-express";
+// import "module-alias/register";
 
-const PORT = 3001;
+const PORT = 3000;
 const IP = "0.0.0.0";
 
 const initServer = async () => {
@@ -14,7 +15,7 @@ const initServer = async () => {
     server.use("/api", apiRouter);
 
     // TODO: Server flag
-    server.listen(PORT, IP, () => {
+    ViteExpress.listen(server, PORT, () => {
         console.log(`Server is listening on port: ${PORT}`);
     });
 };

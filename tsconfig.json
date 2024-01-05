@@ -1,39 +1,23 @@
 {
     "compilerOptions": {
-        "target": "ES2020",
+        "target": "ESNext",
         "useDefineForClassFields": true,
-        "lib": ["ES2020", "DOM", "DOM.Iterable"],
-        "module": "ESNext",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "allowJs": false,
         "skipLibCheck": true,
-
-        /* Bundler mode */
-        "moduleResolution": "bundler",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
         "allowImportingTsExtensions": true,
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
-        "jsx": "react-jsx",
-
-        "esModuleInterop": true,
-
-        /* Linting */
-        "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true,
-        "baseUrl": ".",
         "paths": {
-            "@/*": ["./*"]
+            "@/*": ["./src/*"]
         }
     },
-    "include": ["client"],
-    "exclude": ["node_modules"],
-    "references": [{ "path": "./tsconfig.node.json" }],
-    "ts-node": {
-        "require": ["tsconfig-paths/register"],
-        "esm": true,
-        "compilerOptions": {
-            "module": "NodeNext"
-        }
-    }
+    "include": ["src"]
 }
