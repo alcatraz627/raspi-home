@@ -1,10 +1,12 @@
 import { readServerFile, updateServerFile } from "@/client/api";
 import { useServerData } from "@/client/utils/use-server-data/use-server-data";
 import { Box, Button, CircularProgress, TextField } from "@mui/material";
-import { useState, useEffect, KeyboardEventHandler } from "react";
+import debounce from "lodash/debounce";
+import { useState, useEffect, KeyboardEventHandler, useCallback } from "react";
 import { RenderFileProps } from "../file-preview";
 import { Clear, Save } from "@mui/icons-material";
 import { MDEditor } from "./md-editor/md-editor.component";
+import { Loader } from "../../util/elements/loader.components";
 
 export const RenderText = ({ fileUrl }: RenderFileProps) => {
     const [fileData, fileActions, fileStatus] = useServerData(readServerFile);
@@ -14,27 +16,40 @@ export const RenderText = ({ fileUrl }: RenderFileProps) => {
     const loadFileContent = async (fileUrlProp: string) => {
         const data = await fileActions.query(fileUrlProp);
         setContent(data.file);
+        setContentState(data.file);
     };
-    const handleUpdateFile = async () => {
-        if (typeof contentState !== "string") return;
+    const handleUpdateFile = async (contentsToUpdate: string | null) => {
+        if (typeof contentsToUpdate !== "string") return;
 
-        await updateServerFile(fileUrl, contentState);
-        setContent(contentState);
+        await updateServerFile(fileUrl, contentsToUpdate);
+        setContent(contentsToUpdate);
+        setContentState(contentsToUpdate);
     };
+
+    const debouncedUpdateFile = useCallback(
+        debounce((contentStateProp: typeof contentState) => {
+            console.log("changed 2", contentStateProp);
+            if (typeof contentStateProp !== "string") return;
+            return handleUpdateFile(contentStateProp);
+        }, 250),
+        []
+    );
 
     const handleKeyDown: KeyboardEventHandler<HTMLDivElement> = (e) => {
         // Intercept save action by user
         if (e.key === "s" && (e.metaKey || e.ctrlKey)) {
             e.preventDefault();
-            handleUpdateFile();
+            handleUpdateFile(contentState);
+            return;
         }
     };
 
-    const isMarkdown = fileUrl.endsWith(".md") || fileUrl.endsWith(".mdx");
+    const handleChange = (val: string) => {
+        setContentState(val);
+        debouncedUpdateFile(val);
+    };
 
-    useEffect(() => {
-        setContentState(content);
-    }, [content]);
+    const isMarkdown = fileUrl.endsWith(".md") || fileUrl.endsWith(".mdx");
 
     useEffect(() => {
         if (fileUrl) {
@@ -45,26 +60,30 @@ export const RenderText = ({ fileUrl }: RenderFileProps) => {
     const isEdited = content !== contentState;
 
     if (fileStatus.isLoading || fileStatus.isInitial)
-        return <CircularProgress />;
+        return (
+            <Loader
+                rootProps={{ display: "flex", py: 20, px: 0, width: "100%" }}
+            />
+        );
 
     if (fileStatus.isError) return <>Error Loading file {fileUrl}</>;
 
     return (
-        <>
+        <Box key={fileUrl}>
             {isMarkdown ? (
                 <MDEditor
                     value={contentState || ""}
                     onKeyDown={handleKeyDown}
-                    onChange={(val) => setContentState(val)}
+                    onChange={handleChange}
                 />
             ) : (
                 <TextField
                     fullWidth
                     multiline
                     rows={12}
-                    value={contentState || ""}
+                    value={contentState}
                     onChange={(e) => {
-                        setContentState(e.target.value);
+                        handleChange(e.target.value);
                     }}
                     onKeyDown={handleKeyDown}
                     InputProps={{
@@ -96,6 +115,6 @@ export const RenderText = ({ fileUrl }: RenderFileProps) => {
                     &nbsp; Save
                 </Button>
             </Box>
-        </>
+        </Box>
     );
 };

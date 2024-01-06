@@ -56,6 +56,7 @@ export const Navbar = (): JSX.Element => {
                         sx={{
                             textDecoration: "none",
                             color: "primary.contrastText",
+                            marginLeft: isMobile ? 2 : 0,
                         }}
                         href={RouteMap.home.getPath()}
                     >

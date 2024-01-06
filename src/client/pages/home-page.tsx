@@ -1,6 +1,12 @@
-import { Box, Button, Checkbox, Typography } from "@mui/material";
+import { readServerFile } from "@/client/api";
+import { Box, Button, Chip, Divider, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import { FunctionComponent } from "react";
 import { useNotify } from "../utils/use-notify/notify-provider.component";
+import { MDEditor } from "../components/files/file-type-renders/md-editor/md-editor.component";
+import { Edit } from "@mui/icons-material";
+import { PageMessage } from "../components/util/elements/page-message.components";
+import { RouteMap } from "../routes";
 
 export interface TodoItem {
     text?: string;
@@ -8,89 +14,56 @@ export interface TodoItem {
     children?: TodoItem[];
 }
 
+// TODO: Move to env file
+const ToDoFilePath = "/TODO.md";
+
 export const HomePage: FunctionComponent = () => {
     const { notify } = useNotify();
-    const todoItems: TodoItem[] = [
-        {
-            text: "utils",
-            children: [
-                { text: "toast provider notif" },
-                { text: "error handling" },
-                { text: "modal as promise" },
-            ],
+    const ViewToDoFileUrl = RouteMap.browse.getPath(...ToDoFilePath.split("/"));
+
+    const { data: todoFileData, status: todoFileLoadStatus } = useQuery({
+        queryKey: ["TODO.md"],
+        queryFn: async () => {
+            const data = await readServerFile(ToDoFilePath);
+
+            return data.file;
         },
-        {
-            text: "file explorer",
-            children: [
-                { text: "drag and drop file upload" },
-                { text: "soft delete" },
-                { text: "mobile compatible" },
-                { text: "modal as promise" },
-            ],
-        },
-        {
-            text: "markdown editor",
-            children: [
-                { text: "view / edit mode" },
-                { text: "live edit" },
-                { text: "tags" },
-                { text: "searching" },
-            ],
-        },
-        {
-            text: "csv reader/writer",
-            children: [{ text: "spreadsheet ui" }],
-        },
-        {
-            text: "deployment",
-        },
-    ];
+    });
 
     return (
         <Box>
-            <Typography variant="h4">To Do</Typography>
-
             <Button
-                onClick={() => {
-                    notify({
-                        title: "hello",
-                        message: Date.now().toString(),
-                    });
-                }}
+                sx={{ my: 1 }}
+                size="small"
+                variant="outlined"
+                color="primary"
+                href={ViewToDoFileUrl}
+                target="_blank"
             >
-                Show notif
+                <Edit fontSize="small" /> Edit
             </Button>
 
-            {todoItems.map((t) => (
-                <>
-                    <Box
-                        key={t.text}
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
+            <Divider sx={{ my: 4 }} />
+
+            {todoFileData && <MDEditor preview value={todoFileData} />}
+            {todoFileLoadStatus !== "success" && (
+                <PageMessage
+                    sx={{
+                        bgcolor: "grey.100",
+                        borderRadius: 2,
+                    }}
+                >
+                    Error loading&nbsp;
+                    <Chip
+                        clickable
+                        onClick={() => {
+                            window.open(ViewToDoFileUrl, "_blank");
                         }}
-                    >
-                        <Checkbox checked={t.done} />
-                        <Typography variant="body1">{t.text}</Typography>
-                    </Box>
-                    {t.children &&
-                        t.children.map((c) => (
-                            <Box
-                                key={c.text}
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    pl: 4,
-                                }}
-                            >
-                                <Checkbox checked={t.done} />
-                                <Typography variant="body1">
-                                    {c.text}
-                                </Typography>
-                            </Box>
-                        ))}
-                </>
-            ))}
+                        size="small"
+                        label={ToDoFilePath}
+                    />
+                </PageMessage>
+            )}
         </Box>
     );
 };
