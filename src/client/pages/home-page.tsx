@@ -40,7 +40,7 @@ export const HomePage: FunctionComponent = () => {
                 href={ViewToDoFileUrl}
                 target="_blank"
             >
-                <Edit fontSize="small" /> Edit
+                <Edit fontSize="small" /> Edit Todos
             </Button>
 
             <Divider sx={{ my: 4 }} />
