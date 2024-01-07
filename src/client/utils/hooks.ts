@@ -1,7 +1,7 @@
 import { useMediaQuery } from "@mui/material";
 import { useState, useEffect } from "react";
 
-export const useIsMobile = (width = 780) => {
+export const useIsMobile = (width = 1440) => {
     const isMobile = useMediaQuery(`(max-width: ${width}px)`);
     return isMobile;
 };

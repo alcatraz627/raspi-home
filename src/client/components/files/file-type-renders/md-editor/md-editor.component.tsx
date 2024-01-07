@@ -4,6 +4,7 @@ import { IMarkdownEditor } from "@uiw/react-markdown-editor";
 import { Loader } from "@/client/components/util/elements/loader.components";
 
 import MarkdownEditor from "@uiw/react-markdown-editor";
+import { useIsMobile } from "@/client/utils/hooks";
 // const MarkdownEditor = lazy(() => import("@uiw/react-markdown-editor"));
 
 export interface MDEditorProps extends IMarkdownEditor {
@@ -28,6 +29,7 @@ export const MDEditor: FunctionComponent<MDEditorProps> = ({
     preview,
     ...editorProps
 }) => {
+    const isMobile = useIsMobile();
     // const MDComponent = preview ? MarkdownEditor.
 
     if (preview) {
@@ -48,6 +50,7 @@ export const MDEditor: FunctionComponent<MDEditorProps> = ({
                 value={value}
                 onChange={onChange}
                 height="50vh" // TODO: Proper height
+                toolbarBottom={isMobile}
                 {...editorProps}
             />
         </MdEditorShell>
