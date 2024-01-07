@@ -8,22 +8,27 @@ import { NavigatePath } from "@/client/pages/directory-page";
 import { useNotify } from "@/client/utils/use-notify/notify-provider.component";
 import {
     AddCircleOutline,
+    Close,
     Delete,
     Edit,
     InsertDriveFile,
     OpenInNew,
+    Search,
 } from "@mui/icons-material";
 import {
     Box,
     Divider,
     IconButton,
     List,
+    Input,
     SxProps,
     Theme,
     Typography,
+    InputAdornment,
 } from "@mui/material";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { DirectoryListItem } from "./directory-list-item";
+import { PageMessage } from "../../util/elements/page-message.components";
 
 export interface DirectoryListProps {
     pathList: string[];
@@ -45,6 +50,7 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
     rootStyle,
 }) => {
     const { notify } = useNotify();
+    const [search, setSearch] = useState<string>("");
 
     const getFullPath = (fileName: string) =>
         pathList.concat(fileName).join("/");
@@ -97,6 +103,15 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
         notify({ message: `${newFileName} created` });
     };
 
+    const filtered = useMemo<{ files: string[]; folders: string[] }>(() => {
+        if (search === "") return { files, folders };
+
+        const searchedFiles = files.filter((f) => f.includes(search));
+        const searchedFolders = folders.filter((f) => f.includes(search));
+
+        return { files: searchedFiles, folders: searchedFolders };
+    }, [folders, files, search]);
+
     return (
         <List
             sx={{
@@ -104,6 +119,36 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
                 ...rootStyle,
             }}
         >
+            <Input
+                sx={{
+                    ml: 4,
+                    mb: 2,
+                    width: "calc(100% - 48px)",
+                }}
+                startAdornment={
+                    <InputAdornment position="start">
+                        <Search />
+                    </InputAdornment>
+                }
+                endAdornment={
+                    <InputAdornment position="start">
+                        <IconButton
+                            // size="small"
+                            onClick={() => {
+                                setSearch("");
+                            }}
+                            sx={{
+                                mr: -2,
+                            }}
+                        >
+                            <Close fontSize="small" />
+                        </IconButton>
+                    </InputAdornment>
+                }
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+            />
             {folders.length === 0 && files.length === 0 && (
                 <Typography
                     variant="body2"
@@ -116,7 +161,7 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
                     No data
                 </Typography>
             )}
-            {folders.map((dir) => (
+            {filtered.folders.map((dir) => (
                 <DirectoryListItem
                     key={dir}
                     primaryElement={dir}
@@ -145,7 +190,7 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
 
             <Divider />
 
-            {files.map((f) => (
+            {filtered.files.map((f) => (
                 <DirectoryListItem
                     key={f}
                     avatarVariant="circular"
@@ -173,6 +218,18 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
                     }
                 />
             ))}
+
+            {filtered.folders.length === 0 && filtered.files.length === 0 && (
+                <PageMessage
+                    variant="body2"
+                    py={4}
+                    px={2}
+                    mx="auto"
+                    color="grey.500"
+                >
+                    No results found
+                </PageMessage>
+            )}
 
             <DirectoryListItem
                 avatarVariant="circular"

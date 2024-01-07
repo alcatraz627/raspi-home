@@ -1,21 +1,23 @@
-import { Box, BoxProps, Typography } from "@mui/material";
+import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
 import { FunctionComponent, ReactNode } from "react";
 
 export interface PageMessageProps extends BoxProps {
     children?: string | ReactNode;
     fullWidth?: boolean;
     disablePadding?: boolean;
+    variant?: TypographyProps["variant"];
 }
 
 export const PageMessage: FunctionComponent<PageMessageProps> = ({
     fullWidth,
     disablePadding,
     children,
+    variant = "h4",
     ...rootProps
 }) => {
     const renderChild = () => {
         if (typeof children === "string") {
-            return <Typography variant="h4">{children}</Typography>;
+            return <Typography variant={variant}>{children}</Typography>;
         }
 
         return children;
