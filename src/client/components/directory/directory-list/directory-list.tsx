@@ -106,8 +106,12 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
     const filtered = useMemo<{ files: string[]; folders: string[] }>(() => {
         if (search === "") return { files, folders };
 
-        const searchedFiles = files.filter((f) => f.includes(search));
-        const searchedFolders = folders.filter((f) => f.includes(search));
+        const searchedFiles = files.filter((f) =>
+            f.toLowerCase().includes(search.toLowerCase())
+        );
+        const searchedFolders = folders.filter((f) =>
+            f.toLowerCase().includes(search.toLowerCase())
+        );
 
         return { files: searchedFiles, folders: searchedFolders };
     }, [folders, files, search]);
