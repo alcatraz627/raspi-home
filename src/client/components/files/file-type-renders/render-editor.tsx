@@ -8,7 +8,11 @@ import { Clear, Save } from "@mui/icons-material";
 import { MDEditor } from "./md-editor/md-editor.component";
 import { Loader } from "../../util/elements/loader.components";
 
-export const RenderText = ({ fileUrl }: RenderFileProps) => {
+export interface RenderEditorProps extends RenderFileProps {
+    editorType: "markdown" | "text";
+}
+
+export const RenderEditor = ({ fileUrl, editorType }: RenderEditorProps) => {
     const [fileData, fileActions, fileStatus] = useServerData(readServerFile);
     const [content, setContent] = useState<string | null>(null);
     const [contentState, setContentState] = useState<string | null>(null);
@@ -28,7 +32,6 @@ export const RenderText = ({ fileUrl }: RenderFileProps) => {
 
     const debouncedUpdateFile = useCallback(
         debounce((contentStateProp: typeof contentState) => {
-            console.log("changed 2", contentStateProp);
             if (typeof contentStateProp !== "string") return;
             return handleUpdateFile(contentStateProp);
         }, 250),
@@ -49,7 +52,8 @@ export const RenderText = ({ fileUrl }: RenderFileProps) => {
         debouncedUpdateFile(val);
     };
 
-    const isMarkdown = fileUrl.endsWith(".md") || fileUrl.endsWith(".mdx");
+    // const isMarkdown = fileUrl.endsWith(".md") || fileUrl.endsWith(".mdx");
+    const isMarkdown = editorType === "markdown";
 
     useEffect(() => {
         if (fileUrl) {

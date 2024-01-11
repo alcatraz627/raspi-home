@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import React, { FunctionComponent, Suspense, lazy } from "react";
 import { IMarkdownEditor } from "@uiw/react-markdown-editor";
 import { Loader } from "@/client/components/util/elements/loader.components";
@@ -30,7 +30,7 @@ export const MDEditor: FunctionComponent<MDEditorProps> = ({
     ...editorProps
 }) => {
     const isMobile = useIsMobile();
-    // const MDComponent = preview ? MarkdownEditor.
+    const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
     if (preview) {
         return (
@@ -51,6 +51,8 @@ export const MDEditor: FunctionComponent<MDEditorProps> = ({
                 onChange={onChange}
                 height="50vh" // TODO: Proper height
                 toolbarBottom={isMobile}
+                visible
+                theme={prefersDarkMode ? "dark" : "light"}
                 {...editorProps}
             />
         </MdEditorShell>

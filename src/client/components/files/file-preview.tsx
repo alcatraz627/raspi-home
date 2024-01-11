@@ -1,9 +1,17 @@
+import { renameServerFile } from "@/client/api";
+import { NavigatePath } from "@/client/pages/directory-page";
+import {
+    AddCircleOutline,
+    ArrowCircleDown,
+    Close,
+    RestartAlt,
+    Save,
+} from "@mui/icons-material";
 import {
     AppBar,
     Box,
     Button,
     ButtonGroup,
-    Chip,
     Divider,
     InputAdornment,
     SxProps,
@@ -15,25 +23,26 @@ import {
     Typography,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import { RenderImage } from "./file-type-renders/render-image";
-import { RenderText } from "./file-type-renders/render-text";
 import {
-    AddCircleOutline,
-    ArrowCircleDown,
-    Close,
-    RestartAlt,
-    Save,
-} from "@mui/icons-material";
-import { renameServerFile } from "@/client/api";
-import { NavigatePath } from "@/client/pages/directory-page";
+    RenderEditor,
+    RenderEditorProps,
+} from "./file-type-renders/render-editor";
+import { RenderImage } from "./file-type-renders/render-image";
 
-export type FileType = "image" | "csv" | "markdown" | "text";
+export type FileType = "image" | "csv" | "markdown" | "text" | "pdf" | "video";
 
 export const FileExtMap: Record<string, FileType> = {
     png: "image",
     jpg: "image",
     jpeg: "image",
     gif: "image",
+
+    pdf: "pdf",
+
+    mp4: "video",
+    flv: "video",
+    mov: "video",
+    aac: "video",
 
     csv: "csv",
 
@@ -124,18 +133,20 @@ export const FilePreview = ({
     }, [fileUrl]);
 
     const RenderFile = useMemo(() => {
-        if (fileRenderer === "text") return RenderText;
+        if (fileRenderer === "text") return RenderEditor;
 
         switch (fileType) {
             case "image":
                 return RenderImage;
             case "markdown":
-            // return RenderText;
+                return (props: Omit<RenderEditorProps, "editorType">) => (
+                    <RenderEditor editorType="markdown" {...props} />
+                );
             case "csv":
-            // return RenderText;
+            // return RenderCSV;
             case "text":
             default:
-                return RenderText;
+                return RenderEditor;
         }
     }, [fileUrl, fileRenderer]);
 
@@ -204,6 +215,7 @@ export const FilePreview = ({
                                     value={fileRenderer}
                                     size="small"
                                     onChange={(e, v) => {
+                                        if (v === null) return;
                                         setFileRenderer(
                                             v as typeof fileRenderer
                                         );
@@ -238,7 +250,7 @@ export const FilePreview = ({
                     </AppBar>
                     <Divider />
                     <Box width="100%">
-                        <RenderFile fileUrl={fileUrl} />
+                        <RenderFile fileUrl={fileUrl} key={fileRenderer} />
                     </Box>
                 </>
             ) : (
