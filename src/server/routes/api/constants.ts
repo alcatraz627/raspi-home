@@ -22,6 +22,9 @@ export const BrowseRouterUrlPattern = [
     `:action`,
 ].join("/");
 
+// const ROOT_URL = ""
+const API_ROOT = process.env.API_ROOT || "http://192.168.1.11"; // For the raspi
+
 export const getFsServerUrl = ({
     fsAction,
     fsObject,
@@ -35,7 +38,9 @@ export const getFsServerUrl = ({
     queryPath?: string;
     otherParams?: { newPath: string } | Record<string, string>;
 }) => {
-    let serverUrlPrefix = ["", ...prefixes, fsObject, fsAction, ""].join("/");
+    let serverUrlPrefix = [API_ROOT, ...prefixes, fsObject, fsAction, ""].join(
+        "/"
+    );
 
     const queryParams = new URLSearchParams(otherParams);
     const resolvedPath = queryPath.startsWith("/")
