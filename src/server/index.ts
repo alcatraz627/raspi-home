@@ -1,6 +1,7 @@
 import { apiRouter } from "@/server/routes/api/api.ts";
 import { renderStaticAssets } from "@/server/routes/renderStaticAssets.ts";
 import express from "express";
+import cors from "cors";
 import ViteExpress from "vite-express";
 // import "module-alias/register";
 
@@ -9,6 +10,7 @@ const IP = "0.0.0.0";
 
 const initServer = async () => {
     const server = express();
+    server.use(cors());
 
     renderStaticAssets(server);
 
