@@ -1,39 +1,38 @@
-import { dir } from "console";
-import {
-    UseLocalStorageReturn,
-    useLocalStorage,
-} from "../use-local-storage/use-local-storage";
-
-export type DirectoryState = {
-    directoryPath: string;
-    lastOpenFile: string | null;
-};
-
-export type UseDirectoryStateReturn = [
-    Record<string, DirectoryState["lastOpenFile"]>,
-    (dirPath: string, newValue: DirectoryState["lastOpenFile"]) => void,
-];
+import { useLocalStorage } from "../use-local-storage/use-local-storage";
 
 export const DIRECTORY_STATE = "directoryState";
 
+export type DirectoryData = {
+    lastOpenFile: string | null;
+};
+
+export type DirectoryState = Record<string, DirectoryData | undefined>;
+
+export type UseDirectoryStateReturn = [
+    DirectoryState,
+    (dirPath: string, newDirData: DirectoryData) => void,
+];
+
 export const useDirectoryState = (): UseDirectoryStateReturn => {
-    const initialValue: DirectoryState[] = [];
+    const initialValue: DirectoryState = {};
     const [get, set] = useLocalStorage(DIRECTORY_STATE, initialValue);
 
-    const directoryState = Object.assign(
-        {},
-        ...(get || []).map(({ directoryPath, lastOpenFile }) => ({
-            [directoryPath]: lastOpenFile,
-        }))
-    );
+    const directoryState: DirectoryState = get || {};
+
     const setDirectoryState = (
-        key: string,
-        value: DirectoryState["lastOpenFile"]
+        dirPath: keyof DirectoryState,
+        newDirData:
+            | DirectoryData
+            | ((existing: DirectoryState[string]) => DirectoryData)
     ) => {
-        set([
-            ...get!.filter(({ directoryPath }) => directoryPath !== key),
-            { directoryPath: key, lastOpenFile: value },
-        ]);
+        let existingData = get || {};
+        let finalData = newDirData;
+
+        if (typeof finalData === "function") {
+            finalData = finalData(existingData[dirPath]);
+        }
+
+        set({ ...existingData, [dirPath]: finalData });
     };
 
     return [directoryState, setDirectoryState];

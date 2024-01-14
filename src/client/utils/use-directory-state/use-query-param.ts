@@ -22,3 +22,7 @@ export const useQueryParamKey = (key: string): UseQueryParamReturn => {
 
     return [value, setValue, deleteValue];
 };
+
+export enum QueryKeys {
+    Filename = "fileName",
+}
