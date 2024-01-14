@@ -124,7 +124,6 @@ export const DirectoryPage: React.FunctionComponent = () => {
     const [dirData, dirActions] = useServerData(readServerDirectory);
 
     const fetchDirContents = (path: string) => {
-        console.log(path);
         dirActions.query(path);
     };
 
@@ -232,6 +231,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
         selectFile: handleSelectFile,
         selectFolder: handleSelectFolder,
         refreshFolderContents: handleRefreshFolderContents,
+        uploadFile: handleUploadFile,
         files: dirData?.files || [],
         rootStyle: {},
     };

@@ -5,6 +5,7 @@ import {
     renameServerDirectory,
 } from "@/client/api";
 import { NavigatePath } from "@/client/pages/directory-page";
+import { RouteMap } from "@/client/routes";
 import { useNotify } from "@/client/utils/use-notify/notify-provider.component";
 import {
     AddCircleOutline,
@@ -14,22 +15,24 @@ import {
     InsertDriveFile,
     OpenInNew,
     Search,
+    Upload,
 } from "@mui/icons-material";
 import {
     Box,
     Divider,
     IconButton,
-    List,
     Input,
+    InputAdornment,
+    List,
     SxProps,
     Theme,
     Typography,
-    InputAdornment,
 } from "@mui/material";
-import { FunctionComponent, useEffect, useMemo, useState } from "react";
-import { DirectoryListItem } from "./directory-list-item";
+import { FunctionComponent, useMemo, useState } from "react";
 import { PageMessage } from "../../util/elements/page-message.components";
-import { RouteMap } from "@/client/routes";
+import { DirectoryListItem } from "./directory-list-item";
+import { useDropzone } from "react-dropzone";
+import { TFile, UploadFileProps } from "../../files/upload-file";
 
 export interface DirectoryListProps {
     pathList: string[];
@@ -39,6 +42,7 @@ export interface DirectoryListProps {
     selectFolder: (newPath: NavigatePath) => void;
     selectFile: (newPath: NavigatePath) => void;
     refreshFolderContents: () => void;
+    uploadFile: UploadFileProps["uploadFile"];
 }
 
 export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
@@ -47,6 +51,7 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
     selectFile,
     selectFolder,
     refreshFolderContents,
+    uploadFile,
     files = [],
     rootStyle,
 }) => {
@@ -55,6 +60,31 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
 
     const getFullPath = (fileName?: string) =>
         (fileName ? pathList.concat(fileName) : pathList).join("/");
+
+    const handleUpload = async (uploadedFileProp: TFile | undefined) => {
+        if (uploadedFileProp) {
+            try {
+                await uploadFile([uploadedFileProp]);
+                notify({ message: "File uploaded successfully" });
+            } catch (err) {
+                console.error(err);
+                notify({ message: "Error: " + err });
+            }
+        }
+    };
+
+    const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+        multiple: false,
+        onDrop: async (acceptedFiles) => {
+            const uploadedFile = acceptedFiles[0] as unknown as
+                | TFile
+                | undefined;
+
+            if (uploadedFile) {
+                handleUpload(uploadedFile);
+            }
+        },
+    });
 
     const handleDeleteFile = async (fileName: string): Promise<void> => {
         if (!confirm(`Delete this file ${fileName}?`)) return;
@@ -193,9 +223,7 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
                     }
                 />
             ))}
-
             <Divider />
-
             {filtered.files.map((f) => (
                 <DirectoryListItem
                     key={f}
@@ -224,7 +252,6 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
                     }
                 />
             ))}
-
             {filtered.folders.length === 0 && filtered.files.length === 0 && (
                 <PageMessage
                     variant="body2"
@@ -236,7 +263,6 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
                     No results found
                 </PageMessage>
             )}
-
             <DirectoryListItem
                 avatarVariant="circular"
                 avatarBgColor="primary.light"
@@ -244,6 +270,16 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
                 primaryAction={handleCreateFile}
                 PrimaryIcon={AddCircleOutline}
             />
+
+            <Box {...getRootProps()}>
+                <DirectoryListItem
+                    avatarVariant="circular"
+                    avatarBgColor="primary.light"
+                    primaryElement={"Upload File"}
+                    PrimaryIcon={Upload}
+                />
+                <input {...getInputProps()} />
+            </Box>
         </List>
     );
 };

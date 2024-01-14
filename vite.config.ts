@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, splitVendorChunkPlugin } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
@@ -18,5 +18,22 @@ export default defineConfig({
         // },
     },
 
-    plugins: [react()],
+    plugins: [react(), splitVendorChunkPlugin()],
+
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    react: ["react", "react-dom"],
+                    material: [
+                        "@mui/material",
+                        "@mui/icons-material",
+                        "@emotion/react",
+                        "@emotion/styled",
+                    ],
+                    md: ["@uiw/react-markdown-editor"],
+                },
+            },
+        },
+    },
 });
