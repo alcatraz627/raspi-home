@@ -2,8 +2,7 @@ import { Home, SdStorage, SvgIconComponent } from "@mui/icons-material";
 import { RouteObject } from "react-router-dom";
 import { DirectoryPage } from "./pages/directory-page";
 import { HomePage } from "./pages/home-page";
-
-// const ServerPath = "@path";
+import { QueryKeys } from "./utils/use-directory-state/use-query-param";
 
 export enum RouteKey {
     home = "home",
@@ -35,11 +34,11 @@ export const RouteMap: Record<
         pageOptions: {
             showDrawer: true,
         },
-        getPath: (path) =>
+        getPath: (path, file) =>
             RouteLinks.browse.replace(
                 "*",
                 path.startsWith("/") ? path.substring(1) : path
-            ),
+            ) + (file ? `?${QueryKeys.Filename}=${file}` : ""),
     },
     [RouteKey.home]: {
         key: RouteKey.home,

@@ -29,6 +29,7 @@ import {
 import { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { DirectoryListItem } from "./directory-list-item";
 import { PageMessage } from "../../util/elements/page-message.components";
+import { RouteMap } from "@/client/routes";
 
 export interface DirectoryListProps {
     pathList: string[];
@@ -52,8 +53,8 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
     const { notify } = useNotify();
     const [search, setSearch] = useState<string>("");
 
-    const getFullPath = (fileName: string) =>
-        pathList.concat(fileName).join("/");
+    const getFullPath = (fileName?: string) =>
+        (fileName ? pathList.concat(fileName) : pathList).join("/");
 
     const handleDeleteFile = async (fileName: string): Promise<void> => {
         if (!confirm(`Delete this file ${fileName}?`)) return;
@@ -89,8 +90,9 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
     };
 
     const handleOpenFileInNewTab = (fileName: string): void => {
-        const filePath = getFullPath(fileName);
-        window.open(filePath, "_blank");
+        const folder = getFullPath();
+        const openFilePath = RouteMap.browse.getPath(folder, fileName);
+        window.open(openFilePath, "_blank");
     };
 
     const handleCreateFile = async () => {

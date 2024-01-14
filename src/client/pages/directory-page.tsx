@@ -7,23 +7,29 @@ import {
     readServerDirectory,
     renameServerFile,
 } from "../api";
-import { DirectoryPathBreadcrumbs } from "../components/directory/directory-path-breadcrumbs.component";
 import {
     DirectoryList,
     DirectoryListProps,
 } from "../components/directory/directory-list/directory-list";
+import { DirectoryPathBreadcrumbs } from "../components/directory/directory-path-breadcrumbs.component";
+import {
+    DirectoryTitle,
+    DirectoryTitleProps,
+} from "../components/directory/directory-title.component";
 import {
     FilePreview,
     FilePreviewProps,
 } from "../components/files/file-preview";
 import { RouteMap } from "../routes";
-import { useServerData } from "../utils/use-server-data/use-server-data";
-import { useGlobal } from "../utils/use-global/use-global";
-import {
-    DirectoryTitle,
-    DirectoryTitleProps,
-} from "../components/directory/directory-title.component";
 import { useIsMobile } from "../utils/hooks";
+import { useDirectoryState } from "../utils/use-directory-state/use-directory-state";
+import {
+    QueryKeys,
+    useQueryParamKey,
+} from "../utils/use-directory-state/use-query-param";
+import { useGlobal } from "../utils/use-global/use-global";
+import { useServerData } from "../utils/use-server-data/use-server-data";
+import { last } from "lodash";
 
 export type NavigatePath = string | ((v: string) => string) | null;
 
@@ -38,17 +44,66 @@ export const DirectoryPage: React.FunctionComponent = () => {
     } = useGlobal();
 
     const setIsDrawerOpen = (o: boolean) => setValue("isDrawerOpen", o);
-
     // Will not have the leading slash
-    const pathString = decodeURIComponent(
-        location.pathname.replace("/browse/", "")
-    );
-    const setPathString = (newPath: string) => {
-        navigate(RouteMap.browse.getPath(newPath));
-    };
+    const [pathString, setPathString] = [
+        decodeURIComponent(location.pathname.replace("/browse/", "")),
+        (newPath: string) => {
+            navigate(RouteMap.browse.getPath(newPath));
+        },
+    ];
 
+    const [queryFileName, setQueryFileName, resetQueryFileName] =
+        useQueryParamKey(QueryKeys.Filename);
+
+    const [dirState, setDirState] = useDirectoryState();
+    const cachedDirProperties = dirState[pathString];
+    const lastOpenedFile = cachedDirProperties?.lastOpenFile ?? null;
+
+    const [filePathString, setFilePathString] = useState<string | null>(null);
+
+    // Parse out filename from url
+    const parsedFileName = useMemo(() => {
+        if (filePathString) {
+            return filePathString.split("/").pop() ?? null;
+        }
+
+        return null;
+    }, [filePathString]);
+
+    // When the filepath string changes, update the name into the URL
+    useEffect(() => {
+        if (filePathString) {
+            const newParsedFileName = filePathString.split("/").pop() || "";
+            setQueryFileName(newParsedFileName);
+        } else {
+            resetQueryFileName();
+        }
+    }, [filePathString]);
+
+    // If a query param is passed for an initial opening, load it into the File Path
+    // Else, try to fetch from local storage
+    useEffect(() => {
+        if (queryFileName) {
+            setFilePathString(getFullPath(queryFileName));
+            return;
+        }
+        if (lastOpenedFile) {
+            setQueryFileName(lastOpenedFile);
+            setFilePathString(getFullPath(lastOpenedFile));
+        }
+    }, []);
+
+    // Save the latest open file into local storage
+    useEffect(() => {
+        setDirState(pathString, { lastOpenFile: parsedFileName });
+    }, [parsedFileName]);
+
+    // When loading a folder, fetch its contents and load the last opened file
     useEffect(() => {
         fetchDirContents(pathString);
+        if (lastOpenedFile) {
+            setFilePathString(getFullPath(lastOpenedFile));
+        }
     }, [pathString]);
 
     const parsedPath = useMemo(() => {
@@ -66,7 +121,6 @@ export const DirectoryPage: React.FunctionComponent = () => {
         parsedPath?.[parsedPath.length - 1] || "Root Folder"
     );
 
-    const [filePathString, setFilePathString] = useState<string | null>(null);
     const [dirData, dirActions] = useServerData(readServerDirectory);
 
     const fetchDirContents = (path: string) => {
@@ -80,11 +134,14 @@ export const DirectoryPage: React.FunctionComponent = () => {
             null;
 
         setFilePathString(parsedNewPath);
+        // setDirState(pathString, parsedNewPath);
     };
+
     const handleSelectFolder = (newPath: NavigatePath): void => {
         const parsedNewPath =
             (typeof newPath === "function" ? newPath(pathString) : newPath) ||
             "";
+
         setPathString(parsedNewPath);
         fetchDirContents(parsedNewPath);
     };
@@ -157,6 +214,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
     };
 
     const filePreviewProps: FilePreviewProps = {
+        pathList: parsedPath,
         fileUrl: filePathString,
         refreshFolderContents: handleRefreshFolderContents,
         updateSelectedFile: handleSelectFile,

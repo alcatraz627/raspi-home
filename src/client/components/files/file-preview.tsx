@@ -61,6 +61,7 @@ const guessFileType = (fileName: string | null): FileType => {
 };
 
 export interface FilePreviewProps {
+    pathList: string[];
     fileUrl: string | null;
     refreshFolderContents: () => void;
     rootStyle?: SxProps<Theme>;
@@ -123,6 +124,7 @@ export const FilePreview = ({
         }
     };
 
+    // Update the file name textbox and the renderer being used
     useEffect(() => {
         if (fileUrl) {
             const newParsedFileName = fileUrl.split("/").pop() || "";
@@ -132,6 +134,7 @@ export const FilePreview = ({
         }
     }, [fileUrl]);
 
+    // The file renderer to use, based on file name extension
     const RenderFile = useMemo(() => {
         if (fileRenderer === "text") return RenderEditor;
 
@@ -143,7 +146,11 @@ export const FilePreview = ({
                     <RenderEditor editorType="markdown" {...props} />
                 );
             case "csv":
-            // return RenderCSV;
+            // TODO
+            case "pdf":
+            // TODO
+            case "video":
+            // TODO
             case "text":
             default:
                 return RenderEditor;
