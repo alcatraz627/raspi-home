@@ -9,10 +9,13 @@ import { MDEditor } from "./md-editor/md-editor.component";
 import { Loader } from "../../util/elements/loader.components";
 
 export interface RenderEditorProps extends RenderFileProps {
-    editorType: "markdown" | "text";
+    editorType?: "markdown" | "text";
 }
 
-export const RenderEditor = ({ fileUrl, editorType }: RenderEditorProps) => {
+export const RenderEditor = ({
+    fileUrl,
+    editorType = "text",
+}: RenderEditorProps) => {
     const [fileData, fileActions, fileStatus] = useServerData(readServerFile);
     const [content, setContent] = useState<string | null>(null);
     const [contentState, setContentState] = useState<string | null>(null);
@@ -34,7 +37,7 @@ export const RenderEditor = ({ fileUrl, editorType }: RenderEditorProps) => {
         debounce((contentStateProp: typeof contentState) => {
             if (typeof contentStateProp !== "string") return;
             return handleUpdateFile(contentStateProp);
-        }, 250),
+        }, 1000),
         []
     );
 
@@ -112,7 +115,7 @@ export const RenderEditor = ({ fileUrl, editorType }: RenderEditorProps) => {
                 </Button>
                 <Button
                     variant="contained"
-                    onClick={handleUpdateFile}
+                    onClick={() => handleUpdateFile(contentState)}
                     disabled={!isEdited}
                 >
                     <Save fontSize="small" />

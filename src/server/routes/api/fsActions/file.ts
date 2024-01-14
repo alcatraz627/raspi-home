@@ -1,11 +1,12 @@
-import { HttpMethods } from "@/server/utils/constants";
-import { ensureMethod } from "@/server/utils/middleware";
+import { HttpMethods } from "@/server/utils/constants.ts";
+import { ensureMethod } from "@/server/utils/middleware.ts";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { FsAction, FsObject } from "../constants";
-import { FsActionHandler, FsRequestHandler } from "../interfaces";
-import { DataFolderPath, TrashFolderPath } from "../utils";
-import { getFsServerUrl } from "../constants";
+import { FsAction, FsObject } from "../constants.ts";
+import { FsActionHandler, FsRequestHandler } from "../interfaces.ts";
+import { DataFolderPath, TrashFolderPath } from "../utils.ts";
+import { getFsServerUrl } from "../constants.ts";
+import Busboy from "busboy";
 
 export const readFile: FsActionHandler = async (req, res) => {
     const { path: filePath } = req.query;
@@ -64,13 +65,31 @@ export const renameFile: FsActionHandler = async (req, res) => {
 
 export const createFile: FsActionHandler = async (req, res) => {
     const { path: filePath } = req.query;
-
     const fullPath = path.join(DataFolderPath, filePath);
 
-    const fileHandle = await fs.open(fullPath, "w");
-    await fileHandle.close();
+    const areFilesUploaded = req.headers["content-type"]?.startsWith(
+        "multipart/form-data"
+    );
 
-    return res.status(201).json({ path: filePath }).end();
+    if (!areFilesUploaded) {
+        const fileHandle = await fs.open(fullPath, "w");
+        await fileHandle.close();
+
+        return res.status(201).json({ path: filePath }).end();
+    } else {
+        const busboy = Busboy({ headers: req.headers });
+
+        busboy.on("file", async (_name, file, _info) => {
+            const fileHandle = await fs.open(fullPath, "w");
+            file.pipe(fileHandle.createWriteStream());
+        });
+
+        busboy.on("finish", async () => {
+            return res.status(201).json({ path: filePath }).end();
+        });
+
+        req.pipe(busboy);
+    }
 };
 
 export const updateFile: FsActionHandler = async (req, res) => {

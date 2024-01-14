@@ -68,9 +68,13 @@ export const readServerFile = async (filePath: string) => {
     return { file: resp.data, contentType: resp.headers["content-type"] };
 };
 
-export const createServerFile = async (filePath: string) => {
+export const createServerFile = async <D extends any>(
+    filePath: string,
+    fileData?: D
+) => {
     const resp = await axios.post<{ path: string }>(
-        getApiUrl(FsAction.Create, FsObject.File, filePath)
+        getApiUrl(FsAction.Create, FsObject.File, filePath),
+        fileData
     );
     return resp.data;
 };

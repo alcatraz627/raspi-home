@@ -20,6 +20,7 @@ import {
     FilePreview,
     FilePreviewProps,
 } from "../components/files/file-preview";
+import { TFile } from "../components/files/upload-file";
 import { RouteMap } from "../routes";
 import { useIsMobile } from "../utils/hooks";
 import { useDirectoryState } from "../utils/use-directory-state/use-directory-state";
@@ -29,7 +30,6 @@ import {
 } from "../utils/use-directory-state/use-query-param";
 import { useGlobal } from "../utils/use-global/use-global";
 import { useServerData } from "../utils/use-server-data/use-server-data";
-import { last } from "lodash";
 
 export type NavigatePath = string | ((v: string) => string) | null;
 
@@ -194,6 +194,29 @@ export const DirectoryPage: React.FunctionComponent = () => {
         handleRefreshFolderContents();
     };
 
+    const handleUploadFile = async (files: TFile[]) => {
+        if (!files.length) return;
+
+        await Promise.allSettled([
+            ...files.map((file) => {
+                const newFileName = prompt(
+                    "Enter file name",
+                    file.name + (file.name.includes(".") ? "" : ".txt")
+                );
+                if (!newFileName) return Promise.resolve();
+
+                const fileUploadData = new FormData();
+                fileUploadData.append(`file`, file, newFileName);
+                return createServerFile(
+                    getFullPath(newFileName),
+                    fileUploadData
+                );
+            }),
+        ]);
+
+        handleRefreshFolderContents();
+    };
+
     const directoryTitleProps: DirectoryTitleProps = {
         currentFolderName,
         pathString,
@@ -219,6 +242,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
         refreshFolderContents: handleRefreshFolderContents,
         updateSelectedFile: handleSelectFile,
         createNewFile: handleCreateFile,
+        uploadFile: handleUploadFile,
 
         rootStyle: {},
     };

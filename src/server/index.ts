@@ -6,7 +6,7 @@ import ViteExpress from "vite-express";
 // import "module-alias/register";
 
 const PORT = 3000;
-const IP = "0.0.0.0";
+const HOST = "0.0.0.0";
 
 const initServer = async () => {
     const server = express();
@@ -18,7 +18,7 @@ const initServer = async () => {
 
     // TODO: Server flag
     ViteExpress.listen(server, PORT, () => {
-        console.log(`Server is listening on port: ${PORT}`);
+        console.log(`Server is listening on http://${HOST}:${PORT}`);
     });
 };
 
