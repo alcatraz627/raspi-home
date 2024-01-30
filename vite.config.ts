@@ -2,6 +2,8 @@ import { defineConfig, splitVendorChunkPlugin } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
+const hash = Math.floor(Math.random() * 90000) + 10000;
+
 // https://vitejs.dev/config/
 export default defineConfig({
     resolve: {
@@ -17,12 +19,12 @@ export default defineConfig({
         //     interval: 100,
         // },
     },
-
-    plugins: [react(), splitVendorChunkPlugin()],
-
     build: {
         rollupOptions: {
             output: {
+                entryFileNames: `[name].${hash}.js`,
+                chunkFileNames: `[name].${hash}.js`,
+                assetFileNames: `[name].${hash}.[ext]`,
                 manualChunks: {
                     react: ["react", "react-dom"],
                     material: [
@@ -36,4 +38,5 @@ export default defineConfig({
             },
         },
     },
+    plugins: [react(), splitVendorChunkPlugin()],
 });
