@@ -22,7 +22,7 @@ import {
     Toolbar,
     Typography,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { FunctionComponent, useEffect, useMemo, useState } from "react";
 import {
     RenderEditor,
     RenderEditorProps,
@@ -31,6 +31,7 @@ import { RenderImage } from "./file-type-renders/render-image";
 import { TFile, UploadFile, UploadFileProps } from "./upload-file";
 import { RenderPdf } from "./file-type-renders/render-pdf";
 import { RenderVideo } from "./file-type-renders/render-video";
+import { FileName } from "./file-name";
 
 export type FileType = "image" | "csv" | "markdown" | "text" | "pdf" | "video";
 
@@ -96,7 +97,7 @@ export const FilePreview = ({
         "default"
     );
 
-    const [fileNameState, setFileNameState] = useState<string>();
+    const [fileNameState, setFileNameState] = useState<string>("");
 
     const parsedFileName = useMemo(() => {
         if (fileUrl) {
@@ -106,8 +107,9 @@ export const FilePreview = ({
         return null;
     }, [fileUrl]);
 
-    const isFileNameChanged =
-        fileUrl && parsedFileName !== fileNameState?.trim();
+    const isFileNameChanged = !!(
+        fileUrl && parsedFileName !== fileNameState?.trim()
+    );
 
     const isNewNameValid = !!(fileNameState && fileNameState.trim().length > 0);
 
@@ -216,6 +218,7 @@ export const FilePreview = ({
     return (
         <Box sx={{ pt: 1, ...rootStyle }}>
             <AppBar variant="outlined" position="relative" color="default">
+                {/* TODO: Move the toolbar to another component */}
                 <Toolbar
                     sx={{
                         display: "flex",
@@ -227,41 +230,16 @@ export const FilePreview = ({
                     <Typography variant="subtitle2" color="gray">
                         {fileType}
                     </Typography>
-                    <TextField
-                        variant="standard"
-                        value={fileNameState}
-                        onChange={(e) => {
-                            setFileNameState(e.target.value);
-                        }}
-                        error={!isNewNameValid}
-                        InputProps={{
-                            endAdornment: isFileNameChanged && (
-                                <InputAdornment position="end">
-                                    <RestartAlt
-                                        onClick={handleResetFileName}
-                                        fontSize="small"
-                                        color="primary"
-                                        sx={{
-                                            cursor: "pointer",
-                                        }}
-                                    />
-                                    {isNewNameValid && (
-                                        <Save
-                                            onClick={handleSaveFileName}
-                                            fontSize="small"
-                                            color="primary"
-                                            sx={{
-                                                cursor: "pointer",
-                                            }}
-                                        />
-                                    )}
-                                </InputAdornment>
-                            ),
-                            onBlur: () => {
-                                setFileNameState((v) => v?.trim());
-                            },
-                        }}
+
+                    <FileName
+                        fileNameState={fileNameState}
+                        setFileNameState={setFileNameState}
+                        isNewNameValid={isNewNameValid}
+                        isFileNameChanged={isFileNameChanged}
+                        handleResetFileName={handleResetFileName}
+                        handleSaveFileName={handleSaveFileName}
                     />
+
                     <Box flexGrow={1} />
                     {(["csv", "markdown"] as FileType[]).includes(fileType) && (
                         <ToggleButtonGroup
