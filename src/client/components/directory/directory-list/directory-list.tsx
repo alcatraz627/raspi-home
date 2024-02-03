@@ -36,6 +36,7 @@ import {
     UploadFileProps,
 } from "../../util/elements/file-render/upload-file";
 import { RouteMap } from "@/client/routes/routes.utils";
+import { useIsMobile } from "@/client/utils/hooks";
 
 export interface DirectoryListProps {
     pathList: string[];
@@ -46,6 +47,7 @@ export interface DirectoryListProps {
     selectFile: (newPath: NavigatePath) => void;
     refreshFolderContents: () => void;
     uploadFile: UploadFileProps["uploadFile"];
+    listMaxHeight?: string;
 }
 
 export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
@@ -57,8 +59,10 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
     uploadFile,
     files = [],
     rootStyle,
+    listMaxHeight,
 }) => {
     const { notify } = useNotify();
+    const isMobile = useIsMobile();
     const [search, setSearch] = useState<string>("");
 
     const getFullPath = (fileName?: string) =>
@@ -76,7 +80,7 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
         }
     };
 
-    const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    const { getRootProps, getInputProps } = useDropzone({
         multiple: false,
         onDrop: async (acceptedFiles) => {
             const uploadedFile = acceptedFiles[0] as unknown as
@@ -154,43 +158,52 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
         return { files: searchedFiles, folders: searchedFolders };
     }, [folders, files, search]);
 
+    const SearchInDirectoryList = () => (
+        <Input
+            sx={{
+                ml: 4,
+                mb: 2,
+                width: "calc(100% - 48px)",
+                top: 0,
+                position: "sticky",
+                bgcolor: "white",
+                zIndex: 1,
+            }}
+            startAdornment={
+                <InputAdornment position="start">
+                    <Search />
+                </InputAdornment>
+            }
+            endAdornment={
+                <InputAdornment position="start">
+                    <IconButton
+                        onClick={() => {
+                            setSearch("");
+                        }}
+                        sx={{
+                            mr: -2,
+                        }}
+                    >
+                        <Close fontSize="small" />
+                    </IconButton>
+                </InputAdornment>
+            }
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+        />
+    );
+
     return (
         <List
+            disablePadding={true}
             sx={{
                 width: "100%",
+                overflow: "auto",
                 ...rootStyle,
             }}
         >
-            <Input
-                sx={{
-                    ml: 4,
-                    mb: 2,
-                    width: "calc(100% - 48px)",
-                }}
-                startAdornment={
-                    <InputAdornment position="start">
-                        <Search />
-                    </InputAdornment>
-                }
-                endAdornment={
-                    <InputAdornment position="start">
-                        <IconButton
-                            // size="small"
-                            onClick={() => {
-                                setSearch("");
-                            }}
-                            sx={{
-                                mr: -2,
-                            }}
-                        >
-                            <Close fontSize="small" />
-                        </IconButton>
-                    </InputAdornment>
-                }
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-            />
+            <SearchInDirectoryList />
             {folders.length === 0 && files.length === 0 && (
                 <Typography
                     variant="body2"
@@ -203,72 +216,85 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
                     No data
                 </Typography>
             )}
-            {filtered.folders.map((dir) => (
-                <DirectoryListItem
-                    key={dir}
-                    primaryElement={dir}
-                    primaryAction={() => {
-                        selectFolder((p) => p + "/" + dir);
-                    }}
-                    secondaryAction={
-                        <Box>
-                            <IconButton
-                                edge="end"
-                                onClick={() => handleRenameFolder(dir)}
-                            >
-                                <Edit fontSize="small" />
-                            </IconButton>
-                            &nbsp;
-                            <IconButton
-                                edge="end"
-                                onClick={() => handleDeleteFolder(dir)}
-                            >
-                                <Delete fontSize="small" />
-                            </IconButton>
-                        </Box>
-                    }
-                />
-            ))}
+            <Box
+                sx={{
+                    maxHeight:
+                        listMaxHeight ??
+                        (isMobile
+                            ? "calc(100vh - 320px)"
+                            : "calc(100vh - 430px)"),
+                    overflow: "auto",
+                }}
+            >
+                {filtered.folders.map((dir) => (
+                    <DirectoryListItem
+                        key={dir}
+                        primaryElement={dir}
+                        primaryAction={() => {
+                            selectFolder((p) => p + "/" + dir);
+                        }}
+                        secondaryAction={
+                            <Box>
+                                <IconButton
+                                    edge="end"
+                                    onClick={() => handleRenameFolder(dir)}
+                                >
+                                    <Edit fontSize="small" />
+                                </IconButton>
+                                &nbsp;
+                                <IconButton
+                                    edge="end"
+                                    onClick={() => handleDeleteFolder(dir)}
+                                >
+                                    <Delete fontSize="small" />
+                                </IconButton>
+                            </Box>
+                        }
+                    />
+                ))}
+                <Divider />
+                {filtered.files.map((f) => (
+                    <DirectoryListItem
+                        key={f}
+                        avatarVariant="circular"
+                        primaryElement={f}
+                        primaryAction={() => {
+                            selectFile((p) => p + "/" + f);
+                        }}
+                        PrimaryIcon={InsertDriveFile}
+                        secondaryAction={
+                            <Box>
+                                <IconButton
+                                    edge="end"
+                                    onClick={() => handleOpenFileInNewTab(f)}
+                                >
+                                    <OpenInNew fontSize="small" />
+                                </IconButton>
+                                &nbsp;
+                                <IconButton
+                                    edge="end"
+                                    onClick={() => handleDeleteFile(f)}
+                                >
+                                    <Delete fontSize="small" />
+                                </IconButton>
+                            </Box>
+                        }
+                    />
+                ))}
+                {filtered.folders.length === 0 &&
+                    filtered.files.length === 0 && (
+                        <Message
+                            variant="body2"
+                            py={4}
+                            px={2}
+                            mx="auto"
+                            color="grey.500"
+                        >
+                            No results found
+                        </Message>
+                    )}
+            </Box>
             <Divider />
-            {filtered.files.map((f) => (
-                <DirectoryListItem
-                    key={f}
-                    avatarVariant="circular"
-                    primaryElement={f}
-                    primaryAction={() => {
-                        selectFile((p) => p + "/" + f);
-                    }}
-                    PrimaryIcon={InsertDriveFile}
-                    secondaryAction={
-                        <Box>
-                            <IconButton
-                                edge="end"
-                                onClick={() => handleOpenFileInNewTab(f)}
-                            >
-                                <OpenInNew fontSize="small" />
-                            </IconButton>
-                            &nbsp;
-                            <IconButton
-                                edge="end"
-                                onClick={() => handleDeleteFile(f)}
-                            >
-                                <Delete fontSize="small" />
-                            </IconButton>
-                        </Box>
-                    }
-                />
-            ))}
-            {filtered.folders.length === 0 && filtered.files.length === 0 && (
-                <Message
-                    variant="body2"
-                    py={4}
-                    px={2}
-                    mx="auto"
-                    color="grey.500"
-                >
-                    No results found
-                </Message>
-            )}
             <DirectoryListItem
                 avatarVariant="circular"
                 avatarBgColor="primary.light"
@@ -276,7 +302,6 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
                 primaryAction={handleCreateFile}
                 PrimaryIcon={AddCircleOutline}
             />
-
             <Box {...getRootProps()}>
                 <DirectoryListItem
                     avatarVariant="circular"

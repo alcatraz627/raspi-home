@@ -282,7 +282,10 @@ export const DirectoryPage: React.FunctionComponent = () => {
                             <Divider sx={{ mx: -2, my: 0 }} />
                         </Box>
                         <DirectoryTitle {...directoryTitleProps} />
-                        <DirectoryList {...directoryListProps} />
+                        <DirectoryList
+                            {...directoryListProps}
+                            listMaxHeight="calc(100vh - 540px)"
+                        />
                     </>
                 )}
             </>

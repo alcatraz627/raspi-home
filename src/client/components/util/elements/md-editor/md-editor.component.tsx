@@ -49,7 +49,9 @@ export const MDEditor: FunctionComponent<MDEditorProps> = ({
             <MarkdownEditor
                 value={value}
                 onChange={onChange}
-                height="50vh" // TODO: Proper height
+                height={
+                    isMobile ? "calc(100vh - 264px)" : "calc(100vh - 430px)"
+                }
                 toolbarBottom={isMobile}
                 visible
                 theme={prefersDarkMode ? "dark" : "light"}
