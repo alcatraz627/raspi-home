@@ -218,11 +218,12 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
             )}
             <Box
                 sx={{
+                    minHeight: "-webkit-fill-available",
                     maxHeight:
                         listMaxHeight ??
                         (isMobile
-                            ? "calc(100vh - 320px)"
-                            : "calc(100vh - 430px)"),
+                            ? "calc(100dvh - 320px)"
+                            : "calc(100dvh - 430px)"),
                     overflow: "auto",
                 }}
             >

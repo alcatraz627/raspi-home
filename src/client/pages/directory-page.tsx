@@ -284,7 +284,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
                         <DirectoryTitle {...directoryTitleProps} />
                         <DirectoryList
                             {...directoryListProps}
-                            listMaxHeight="calc(100vh - 540px)"
+                            listMaxHeight="calc(100dvh - 540px)"
                         />
                     </>
                 )}

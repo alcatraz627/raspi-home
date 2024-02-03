@@ -50,7 +50,7 @@ export const MDEditor: FunctionComponent<MDEditorProps> = ({
                 value={value}
                 onChange={onChange}
                 height={
-                    isMobile ? "calc(100vh - 264px)" : "calc(100vh - 430px)"
+                    isMobile ? "calc(100dvh - 264px)" : "calc(100dvh - 430px)"
                 }
                 toolbarBottom={isMobile}
                 visible
