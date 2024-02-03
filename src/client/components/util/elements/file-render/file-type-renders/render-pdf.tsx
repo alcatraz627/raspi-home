@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
-import { RenderFileProps } from "../file-preview.tsx";
+import { FileReaderProps } from "../file-reader-wrapper.tsx";
 import {
     getFsServerUrl,
     FsAction,
     FsObject,
 } from "@/server/routes/api/constants";
 
-export const RenderPdf = ({ fileUrl }: RenderFileProps) => {
+export const RenderPdf = ({ fileUrl }: FileReaderProps) => {
     const imgSrc = getFsServerUrl({
         fsAction: FsAction.Read,
         fsObject: FsObject.File,

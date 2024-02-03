@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
-import { RenderFileProps } from "../file-preview.tsx";
+import { FileReaderProps } from "../file-reader-wrapper.tsx";
 import {
     getFsServerUrl,
     FsAction,
     FsObject,
 } from "@/server/routes/api/constants";
 
-export const RenderVideo = ({ fileUrl }: RenderFileProps) => {
+export const RenderVideo = ({ fileUrl }: FileReaderProps) => {
     const videoSrc = getFsServerUrl({
         fsAction: FsAction.Read,
         fsObject: FsObject.File,

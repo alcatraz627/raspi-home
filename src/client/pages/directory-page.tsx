@@ -17,9 +17,9 @@ import {
     DirectoryTitleProps,
 } from "../components/directory/directory-title.component";
 import {
-    FilePreview,
-    FilePreviewProps,
-} from "../components/util/elements/file-render/file-preview";
+    FileReaderWrapper,
+    FileReaderWrapperProps,
+} from "../components/util/elements/file-render/file-reader-wrapper";
 import { TFile } from "../components/util/elements/file-render/upload-file";
 import { useIsMobile } from "../utils/hooks";
 import { useDirectoryState } from "../utils/use-directory-state/use-directory-state";
@@ -239,57 +239,59 @@ export const DirectoryPage: React.FunctionComponent = () => {
         rootStyle: {},
     };
 
-    const filePreviewProps: FilePreviewProps = {
+    const filePreviewProps: FileReaderWrapperProps = {
         pathList: parsedPath,
         fileUrl: filePathString,
         refreshFolderContents: handleRefreshFolderContents,
-        updateSelectedFile: handleSelectFile,
+        updateSelectedFileCache: handleSelectFile,
         createNewFile: handleCreateFile,
         uploadFile: handleUploadFile,
 
         rootStyle: {},
     };
 
-    if (isMobile) {
-        return (
-            <>
-                <div>
-                    <SwipeableDrawer
-                        anchor="left"
-                        open={isDrawerOpen}
-                        onOpen={() => setIsDrawerOpen(true)}
-                        onClose={() => setIsDrawerOpen(false)}
-                    >
-                        <Box pt={isMobile ? 2 : 3}>
-                            <DirectoryPathBreadcrumbs
-                                parsedPath={parsedPath}
-                                handleSelectFolder={handleSelectFolder}
-                            />
-                            <DirectoryTitle {...directoryTitleProps} />
-                        </Box>
-                        <DirectoryList
-                            {...directoryListProps}
-                            rootStyle={{
-                                width: "clamp(100px, 70vw, 300px)",
-                            }}
+    const MobileView = () => (
+        <Box>
+            <div>
+                <SwipeableDrawer
+                    anchor="left"
+                    open={isDrawerOpen}
+                    onOpen={() => setIsDrawerOpen(true)}
+                    onClose={() => setIsDrawerOpen(false)}
+                >
+                    <Box pt={isMobile ? 2 : 3}>
+                        <DirectoryPathBreadcrumbs
+                            parsedPath={parsedPath}
+                            handleSelectFolder={handleSelectFolder}
                         />
-                    </SwipeableDrawer>
-                </div>
-                <FilePreview {...filePreviewProps} />
-                {!filePathString && (
-                    <>
-                        <Box py={2}>
-                            <Divider sx={{ mx: -2, my: 0 }} />
-                        </Box>
                         <DirectoryTitle {...directoryTitleProps} />
-                        <DirectoryList
-                            {...directoryListProps}
-                            listMaxHeight="calc(100dvh - 540px)"
-                        />
-                    </>
-                )}
-            </>
-        );
+                    </Box>
+                    <DirectoryList
+                        {...directoryListProps}
+                        rootStyle={{
+                            width: "clamp(100px, 70vw, 300px)",
+                        }}
+                    />
+                </SwipeableDrawer>
+            </div>
+            <FileReaderWrapper {...filePreviewProps} />
+            {!filePathString && (
+                <>
+                    <Box py={2}>
+                        <Divider sx={{ mx: -2, my: 0 }} />
+                    </Box>
+                    <DirectoryTitle {...directoryTitleProps} />
+                    <DirectoryList
+                        {...directoryListProps}
+                        listMaxHeight="calc(100dvh - 540px)"
+                    />
+                </>
+            )}
+        </Box>
+    );
+
+    if (isMobile) {
+        return <MobileView />;
     }
 
     return (
@@ -316,7 +318,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
                     flexItem
                     sx={{ mr: 4, mt: 1 }}
                 />
-                <FilePreview
+                <FileReaderWrapper
                     {...filePreviewProps}
                     rootStyle={{ width: "160%" }}
                 />

@@ -3,12 +3,12 @@ import { useServerData } from "@/client/utils/use-server-data/use-server-data";
 import { Box, Button, CircularProgress, TextField } from "@mui/material";
 import debounce from "lodash/debounce";
 import { useState, useEffect, KeyboardEventHandler, useCallback } from "react";
-import { RenderFileProps } from "../file-preview";
+import { FileReaderProps } from "../file-reader-wrapper";
 import { Clear, Save } from "@mui/icons-material";
 import { MDEditor } from "../../md-editor/md-editor.component";
 import { Loader } from "../../../common/loader.components";
 
-export interface RenderTextProps extends RenderFileProps {
+export interface RenderTextProps extends FileReaderProps {
     editorType?: "markdown" | "text";
 }
 
