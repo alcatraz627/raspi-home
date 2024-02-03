@@ -38,7 +38,6 @@ export const HomePage: FunctionComponent = () => {
                 variant="outlined"
                 color="primary"
                 href={ViewToDoFileUrl}
-                target="_blank"
             >
                 <Edit fontSize="small" /> Edit Todos
             </Button>
@@ -57,7 +56,7 @@ export const HomePage: FunctionComponent = () => {
                     <Chip
                         clickable
                         onClick={() => {
-                            window.open(ViewToDoFileUrl, "_blank");
+                            window.open(ViewToDoFileUrl);
                         }}
                         size="small"
                         label={ToDoFilePath}
