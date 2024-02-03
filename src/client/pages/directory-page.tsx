@@ -19,8 +19,8 @@ import {
 import {
     FileReaderWrapper,
     FileReaderWrapperProps,
-} from "../components/util/elements/file-render/file-reader-wrapper";
-import { TFile } from "../components/util/elements/file-render/upload-file";
+} from "../components/util/elements/file-reader/file-reader-wrapper";
+import { TFile } from "../components/util/elements/file-reader/upload-file";
 import { useIsMobile } from "../utils/hooks";
 import { useDirectoryState } from "../utils/use-directory-state/use-directory-state";
 import {
@@ -308,6 +308,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
                 flexDirection="row"
                 height="100%"
                 flexGrow={1}
+                // alignItems="center"
             >
                 <DirectoryList
                     {...directoryListProps}

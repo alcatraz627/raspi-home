@@ -34,7 +34,7 @@ import { useDropzone } from "react-dropzone";
 import {
     TFile,
     UploadFileProps,
-} from "../../util/elements/file-render/upload-file";
+} from "../../util/elements/file-reader/upload-file";
 import { RouteMap } from "@/client/routes/routes.utils";
 import { useIsMobile } from "@/client/utils/hooks";
 

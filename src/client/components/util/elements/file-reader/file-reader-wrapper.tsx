@@ -1,11 +1,26 @@
 import { renameServerFile } from "@/client/api";
 import { NavigatePath } from "@/client/pages/directory-page";
-import { AppBar, Box, Divider, SxProps, Theme } from "@mui/material";
-import { FunctionComponent, useState } from "react";
+import {
+    AppBar,
+    Box,
+    Divider,
+    MenuItem,
+    Select,
+    SxProps,
+    Theme,
+    Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
 import { UploadFileProps } from "./upload-file";
 import { FileToolbar } from "./utils/file-toolbar";
 import { NoFileSelected } from "./utils/no-file-selected";
-import { guessFileType, FileType, getDefaultRenderer } from "./utils/utils";
+import {
+    guessFileType,
+    FileType,
+    getDefaultRenderer,
+    FileTypeList,
+} from "./utils/utils";
+import { EditFileWrapper } from "./edit-file-wrapper";
 
 export interface FileReaderProps {
     fileUrl: string;
@@ -19,7 +34,7 @@ export interface FileReaderWrapperProps {
     updateSelectedFileCache: (newPath: NavigatePath) => void;
     createNewFile: () => Promise<void>;
     uploadFile: UploadFileProps["uploadFile"];
-    FileReader?: FunctionComponent<FileReaderProps>;
+    initialFileReader?: FileType;
 }
 
 export const FileReaderWrapper = ({
@@ -29,11 +44,12 @@ export const FileReaderWrapper = ({
     createNewFile,
     uploadFile,
     rootStyle,
-    FileReader,
+    initialFileReader = "text",
 }: FileReaderWrapperProps) => {
     const fileType = guessFileType(fileUrl);
 
-    const [selectedRenderer, setSelectedRenderer] = useState<FileType>("text");
+    const [selectedRenderer, setSelectedRenderer] =
+        useState<FileType>(initialFileReader);
 
     const handleSaveFileName = async (newFileUrl: string) => {
         if (!fileUrl) return;
@@ -48,8 +64,35 @@ export const FileReaderWrapper = ({
         }
     };
 
-    const RenderFile =
-        FileReader ?? getDefaultRenderer(selectedRenderer || fileType);
+    useEffect(() => {
+        if (fileUrl) {
+            setSelectedRenderer(fileType);
+        }
+    }, [fileUrl]);
+
+    const [RenderFile, isEditable] = getDefaultRenderer(
+        selectedRenderer || fileType
+    );
+
+    const SelectFileRenderer = () => (
+        <Select
+            value={selectedRenderer}
+            size="small"
+            sx={{
+                bgcolor: "white",
+            }}
+            margin="none"
+            onChange={(e) => {
+                setSelectedRenderer(e.target.value as FileType);
+            }}
+        >
+            {FileTypeList.map((fileTypeVal) => (
+                <MenuItem value={fileTypeVal}>
+                    <Typography variant="button">{fileTypeVal}</Typography>
+                </MenuItem>
+            ))}
+        </Select>
+    );
 
     if (!fileUrl) {
         return (
@@ -66,15 +109,23 @@ export const FileReaderWrapper = ({
                 <FileToolbar
                     fileType={fileType}
                     fileUrl={fileUrl}
-                    selectedRenderer={selectedRenderer}
-                    setSelectedRenderer={setSelectedRenderer}
-                    updateSelectedFileCache={updateSelectedFileCache}
+                    clearFileSelectionInCache={() =>
+                        updateSelectedFileCache(null)
+                    }
                     handleSaveFileName={handleSaveFileName}
+                    SelectFileRenderer={SelectFileRenderer}
                 />
             </AppBar>
             <Divider />
             <Box width="100%">
-                <RenderFile fileUrl={fileUrl} key={selectedRenderer} />
+                {isEditable ? (
+                    <EditFileWrapper
+                        fileUrl={fileUrl}
+                        RenderFile={RenderFile}
+                    />
+                ) : (
+                    <RenderFile fileUrl={fileUrl} />
+                )}
             </Box>
         </Box>
     );

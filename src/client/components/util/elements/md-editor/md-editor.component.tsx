@@ -1,5 +1,5 @@
 import { Box, useMediaQuery } from "@mui/material";
-import React, { FunctionComponent, Suspense, lazy } from "react";
+import { FunctionComponent, Suspense } from "react";
 import { IMarkdownEditor } from "@uiw/react-markdown-editor";
 import { Loader } from "@/client/components/util/common/loader.components";
 
@@ -35,11 +35,7 @@ export const MDEditor: FunctionComponent<MDEditorProps> = ({
     if (preview) {
         return (
             <MdEditorShell>
-                <MarkdownEditor.Markdown
-                    source={value}
-                    height="50vh" // TODO: Proper height
-                    {...editorProps}
-                />
+                <MarkdownEditor.Markdown source={value} {...editorProps} />
             </MdEditorShell>
         );
     }
@@ -49,9 +45,6 @@ export const MDEditor: FunctionComponent<MDEditorProps> = ({
             <MarkdownEditor
                 value={value}
                 onChange={onChange}
-                height={
-                    isMobile ? "calc(100dvh - 264px)" : "calc(100dvh - 430px)"
-                }
                 toolbarBottom={isMobile}
                 visible
                 theme={prefersDarkMode ? "dark" : "light"}

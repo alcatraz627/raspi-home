@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { AppRoutes } from "./routes/app-routes.js";
-import { Layout } from "./components/util/layout/parent";
+import { AppWrapper } from "./components/util/layout/app-wrapper.js";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-        <AppRoutes Layout={Layout} />
+        <AppRoutes Layout={AppWrapper} />
     </React.StrictMode>
 );

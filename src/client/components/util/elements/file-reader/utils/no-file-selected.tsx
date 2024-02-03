@@ -14,7 +14,13 @@ export const NoFileSelected: FunctionComponent<NoFileSelectedProps> = ({
     createNewFile,
     uploadFile,
 }) => (
-    <Box sx={{ pt: 1, ...rootStyle }}>
+    <Box
+        sx={{
+            width: "100%",
+            pt: 1,
+            ...rootStyle,
+        }}
+    >
         <Box
             sx={{
                 display: "flex",

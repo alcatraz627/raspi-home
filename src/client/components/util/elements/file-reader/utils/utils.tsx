@@ -1,7 +1,11 @@
-import { RenderImage } from "../file-type-renders/render-image";
-import { RenderPdf } from "../file-type-renders/render-pdf";
-import { RenderTextProps, RenderText } from "../file-type-renders/render-text";
-import { RenderVideo } from "../file-type-renders/render-video";
+import { FunctionComponent } from "react";
+import { RenderImage } from "../readers/render-image";
+import { RenderMarkdown } from "../editors/render-markdown";
+import { RenderPdf } from "../readers/render-pdf";
+import { RenderText } from "../editors/render-text";
+import { RenderVideo } from "../readers/render-video";
+import { FileReaderProps } from "../file-reader-wrapper";
+import { EditFileRenderProps } from "../edit-file-wrapper";
 
 export type FileType =
     | "image"
@@ -11,6 +15,16 @@ export type FileType =
     | "pdf"
     | "video"
     | "html"; // TODO
+
+export const FileTypeList: FileType[] = [
+    "image",
+    "csv",
+    "markdown",
+    "text",
+    "pdf",
+    "video",
+    "html",
+];
 
 // Get file type from file extension
 export const FileExtMap: Record<string, FileType> = {
@@ -48,24 +62,26 @@ export const guessFileType = (fileName: string | null): FileType => {
 };
 
 // The file renderer to use, based on file name extension
-export const getDefaultRenderer = (fileTypeProp: FileType) => {
+export const getDefaultRenderer = (
+    fileTypeProp: FileType
+):
+    | [render: FunctionComponent<EditFileRenderProps>, editable: true]
+    | [render: FunctionComponent<FileReaderProps>, editable: false] => {
     switch (fileTypeProp) {
         case "markdown":
-            return (props: Omit<RenderTextProps, "editorType">) => (
-                <RenderText editorType="markdown" {...props} />
-            );
+            return [RenderMarkdown, true];
         case "image":
-            return RenderImage;
+            return [RenderImage, false];
         case "pdf":
-            return RenderPdf;
+            return [RenderPdf, false];
         case "video":
-            return RenderVideo;
+            return [RenderVideo, false];
         case "csv":
         // TODO
         case "html":
         // TODO
         case "text":
         default:
-            return RenderText;
+            return [RenderText, true];
     }
 };

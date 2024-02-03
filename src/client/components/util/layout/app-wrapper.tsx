@@ -9,7 +9,7 @@ import {
 } from "../../../utils/use-global/use-global";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-export const Layout = ({
+export const AppWrapper = ({
     children,
 }: {
     children: JSX.Element;
