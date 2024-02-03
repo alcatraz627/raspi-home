@@ -1,7 +1,7 @@
 import { AddCircleOutline } from "@mui/icons-material";
 import { Box, Button, Divider, Typography, BoxProps } from "@mui/material";
 import { FunctionComponent } from "react";
-import { UploadFile, UploadFileProps } from "../upload-file";
+import { UploadFile, UploadFileProps } from "../../upload-file";
 
 export interface NoFileSelectedProps {
     createNewFile: () => Promise<void>;

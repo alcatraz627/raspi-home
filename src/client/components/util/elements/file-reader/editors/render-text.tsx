@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { EditFileRenderProps } from "../edit-file-wrapper";
+import { EditFileRenderProps } from "../utils/utils";
 
 // TODO: Allow passing custom renderer
 export const RenderText = ({

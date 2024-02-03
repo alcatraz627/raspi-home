@@ -10,17 +10,17 @@ import {
 import {
     DirectoryList,
     DirectoryListProps,
-} from "../components/directory/directory-list/directory-list";
-import { DirectoryPathBreadcrumbs } from "../components/directory/breadcrumbs/directory-path-breadcrumbs.component";
+} from "../components/directory/directory-list";
+import { DirectoryPathBreadcrumbs } from "../components/directory/breadcrumbs/directory-path-breadcrumbs";
 import {
     DirectoryTitle,
     DirectoryTitleProps,
 } from "../components/directory/directory-title.component";
 import {
-    FileReaderWrapper,
-    FileReaderWrapperProps,
-} from "../components/util/elements/file-reader/file-reader-wrapper";
-import { TFile } from "../components/util/elements/file-reader/upload-file";
+    ReadFileWrapper,
+    ReadFileWrapperProps,
+} from "../components/util/elements/file-reader/read-file-wrapper";
+import { TFile } from "../components/util/elements/upload-file";
 import { useIsMobile } from "../utils/hooks";
 import { useDirectoryState } from "../utils/use-directory-state/use-directory-state";
 import {
@@ -30,6 +30,7 @@ import {
 import { useGlobal } from "../utils/use-global/use-global";
 import { useServerData } from "../utils/use-server-data/use-server-data";
 import { RouteMap } from "../routes/routes.utils";
+import { PathBreadcrumbs } from "../components/util/elements/path-breadcrumbs";
 
 export type NavigatePath = string | ((v: string) => string) | null;
 
@@ -239,7 +240,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
         rootStyle: {},
     };
 
-    const filePreviewProps: FileReaderWrapperProps = {
+    const filePreviewProps: ReadFileWrapperProps = {
         pathList: parsedPath,
         fileUrl: filePathString,
         refreshFolderContents: handleRefreshFolderContents,
@@ -260,10 +261,17 @@ export const DirectoryPage: React.FunctionComponent = () => {
                     onClose={() => setIsDrawerOpen(false)}
                 >
                     <Box pt={isMobile ? 2 : 3}>
-                        <DirectoryPathBreadcrumbs
-                            parsedPath={parsedPath}
-                            handleSelectFolder={handleSelectFolder}
-                        />
+                        <Box
+                            sx={{
+                                px: 3,
+                                width: "clamp(100px, 70vw, 300px)",
+                            }}
+                        >
+                            <PathBreadcrumbs
+                                parsedPath={parsedPath}
+                                selectFolder={handleSelectFolder}
+                            />
+                        </Box>{" "}
                         <DirectoryTitle {...directoryTitleProps} />
                     </Box>
                     <DirectoryList
@@ -274,7 +282,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
                     />
                 </SwipeableDrawer>
             </div>
-            <FileReaderWrapper {...filePreviewProps} />
+            <ReadFileWrapper {...filePreviewProps} />
             {!filePathString && (
                 <>
                     <Box py={2}>
@@ -296,10 +304,16 @@ export const DirectoryPage: React.FunctionComponent = () => {
 
     return (
         <Box>
-            <DirectoryPathBreadcrumbs
-                parsedPath={parsedPath}
-                handleSelectFolder={handleSelectFolder}
-            />
+            <Box
+                sx={{
+                    px: 3,
+                }}
+            >
+                <PathBreadcrumbs
+                    parsedPath={parsedPath}
+                    selectFolder={handleSelectFolder}
+                />
+            </Box>{" "}
             <Divider sx={{ my: 2 }} />
             <DirectoryTitle {...directoryTitleProps} />
             <Box
@@ -319,7 +333,7 @@ export const DirectoryPage: React.FunctionComponent = () => {
                     flexItem
                     sx={{ mr: 4, mt: 1 }}
                 />
-                <FileReaderWrapper
+                <ReadFileWrapper
                     {...filePreviewProps}
                     rootStyle={{ width: "160%" }}
                 />

@@ -28,13 +28,10 @@ import {
     Typography,
 } from "@mui/material";
 import { FunctionComponent, useMemo, useState } from "react";
-import { Message } from "../../util/common/message.components";
+import { Message } from "../util/common/message.components";
 import { DirectoryListItem } from "./directory-list-item";
 import { useDropzone } from "react-dropzone";
-import {
-    TFile,
-    UploadFileProps,
-} from "../../util/elements/file-reader/upload-file";
+import { TFile, UploadFileProps } from "../util/elements/upload-file";
 import { RouteMap } from "@/client/routes/routes.utils";
 import { useIsMobile } from "@/client/utils/hooks";
 

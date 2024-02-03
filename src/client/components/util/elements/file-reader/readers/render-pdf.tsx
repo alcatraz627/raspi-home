@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { FileReaderProps } from "../file-reader-wrapper.tsx";
+import { FileReaderProps } from "../utils/utils";
 import {
     getFsServerUrl,
     FsAction,

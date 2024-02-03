@@ -4,8 +4,7 @@ import { RenderMarkdown } from "../editors/render-markdown";
 import { RenderPdf } from "../readers/render-pdf";
 import { RenderText } from "../editors/render-text";
 import { RenderVideo } from "../readers/render-video";
-import { FileReaderProps } from "../file-reader-wrapper";
-import { EditFileRenderProps } from "../edit-file-wrapper";
+import { KeyboardEventHandler } from "react";
 
 export type FileType =
     | "image"
@@ -85,3 +84,14 @@ export const getDefaultRenderer = (
             return [RenderText, true];
     }
 };
+
+export interface EditFileRenderProps {
+    contentState: string | null;
+    handleKeyDown: KeyboardEventHandler<HTMLDivElement>;
+    handleChange: (val: string) => void;
+    height: string;
+}
+
+export interface FileReaderProps {
+    fileUrl: string;
+}

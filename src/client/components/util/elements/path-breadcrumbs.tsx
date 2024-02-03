@@ -1,7 +1,7 @@
 import { Box, Chip } from "@mui/material";
 import { Fragment, FunctionComponent } from "react";
-import { NavigatePath } from "../../../../pages/directory-page";
-import { useIsMobile } from "../../../../utils/hooks";
+import { NavigatePath } from "../../../pages/directory-page";
+import { useIsMobile } from "../../../utils/hooks";
 
 export interface PathBreadcrumbsProps {
     parsedPath: string[];

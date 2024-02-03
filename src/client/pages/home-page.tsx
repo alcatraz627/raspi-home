@@ -3,7 +3,7 @@ import { Box, Button, Chip, Divider, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { FunctionComponent } from "react";
 import { useNotify } from "../utils/use-notify/notify-provider.component";
-import { MDEditor } from "../components/util/elements/md-editor/md-editor.component";
+import { MDEditor } from "../components/util/elements/md-editor.component";
 import { Edit } from "@mui/icons-material";
 import { Message } from "../components/util/common/message.components";
 import { RouteMap } from "@/client/routes/routes.utils";

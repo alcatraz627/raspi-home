@@ -8,56 +8,18 @@ export interface FileToolbarProps {
     fileType: FileType;
     fileUrl: string | null;
     SelectFileRenderer: FunctionComponent;
+    FileNameRenderer: FunctionComponent;
 
     clearFileSelectionInCache: () => void;
-    handleSaveFileName: (newFileUrl: string) => Promise<void>;
 }
 
 export const FileToolbar: FunctionComponent<FileToolbarProps> = ({
     fileType,
     fileUrl,
     SelectFileRenderer,
+    FileNameRenderer,
     clearFileSelectionInCache,
-    handleSaveFileName,
 }) => {
-    const [fileNameState, setFileNameState] = useState<string>("");
-
-    const parsedFileName = useMemo(() => {
-        if (fileUrl) {
-            return fileUrl.split("/").pop() ?? null;
-        }
-
-        return null;
-    }, [fileUrl]);
-
-    const isFileNameChanged = !!(
-        fileUrl && parsedFileName !== fileNameState?.trim()
-    );
-
-    const handleResetFileName = () => {
-        if (parsedFileName) {
-            setFileNameState(parsedFileName);
-        }
-    };
-
-    const callSaveFileName = async () => {
-        if (!!fileUrl) return;
-
-        const newFileUrl =
-            fileUrl?.split("/").slice(0, -1).concat(fileNameState).join("/") ||
-            "";
-
-        handleSaveFileName(newFileUrl);
-    };
-
-    // Update the file name textbox and the renderer being used
-    useEffect(() => {
-        if (fileUrl) {
-            const newParsedFileName = fileUrl.split("/").pop() || "";
-            setFileNameState(newParsedFileName);
-        }
-    }, [fileUrl]);
-
     // Todo: Save on ctrl + s
 
     return (
@@ -73,13 +35,7 @@ export const FileToolbar: FunctionComponent<FileToolbarProps> = ({
                 {fileType}
             </Typography>
 
-            <FileName
-                fileNameState={fileNameState}
-                setFileNameState={setFileNameState}
-                isFileNameChanged={isFileNameChanged}
-                handleResetFileName={handleResetFileName}
-                handleSaveFileName={callSaveFileName}
-            />
+            <FileNameRenderer />
 
             <Box flexGrow={1} />
 

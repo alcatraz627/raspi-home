@@ -1,7 +1,7 @@
 import { useNotify } from "@/client/utils/use-notify/notify-provider.component";
 import { Close, CloudUpload, Publish } from "@mui/icons-material";
 import { Button, Chip, Grid } from "@mui/material";
-import { FunctionComponent, useCallback, useState } from "react";
+import { FunctionComponent, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 export interface UploadFileProps {

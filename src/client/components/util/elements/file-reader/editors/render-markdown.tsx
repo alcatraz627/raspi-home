@@ -1,5 +1,5 @@
-import { MDEditor } from "../../md-editor/md-editor.component";
-import { EditFileRenderProps } from "../edit-file-wrapper";
+import { MDEditor } from "../../md-editor.component";
+import { EditFileRenderProps } from "../utils/utils";
 
 export const RenderMarkdown = ({
     contentState,

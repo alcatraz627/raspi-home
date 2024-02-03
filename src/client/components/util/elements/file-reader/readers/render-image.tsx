@@ -4,7 +4,7 @@ import {
     FsAction,
     FsObject,
 } from "@/server/routes/api/constants";
-import { FileReaderProps } from "../file-reader-wrapper";
+import { FileReaderProps } from "../utils/utils";
 
 export const RenderImage = ({ fileUrl }: FileReaderProps) => {
     const imgSrc = getFsServerUrl({

@@ -10,23 +10,20 @@ import {
     Theme,
     Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { UploadFileProps } from "./upload-file";
+import { useEffect, useMemo, useState } from "react";
+import { UploadFileProps } from "../upload-file";
+import { EditFileWrapper } from "./edit-file-wrapper";
+import { FileName } from "./utils/file-name";
 import { FileToolbar } from "./utils/file-toolbar";
 import { NoFileSelected } from "./utils/no-file-selected";
 import {
-    guessFileType,
     FileType,
-    getDefaultRenderer,
     FileTypeList,
+    getDefaultRenderer,
+    guessFileType,
 } from "./utils/utils";
-import { EditFileWrapper } from "./edit-file-wrapper";
 
-export interface FileReaderProps {
-    fileUrl: string;
-}
-
-export interface FileReaderWrapperProps {
+export interface ReadFileWrapperProps {
     pathList: string[];
     fileUrl: string | null;
     refreshFolderContents: () => void;
@@ -37,7 +34,7 @@ export interface FileReaderWrapperProps {
     initialFileReader?: FileType;
 }
 
-export const FileReaderWrapper = ({
+export const ReadFileWrapper = ({
     fileUrl,
     refreshFolderContents,
     updateSelectedFileCache,
@@ -45,14 +42,39 @@ export const FileReaderWrapper = ({
     uploadFile,
     rootStyle,
     initialFileReader = "text",
-}: FileReaderWrapperProps) => {
+}: ReadFileWrapperProps) => {
     const fileType = guessFileType(fileUrl);
 
+    const [fileNameState, setFileNameState] = useState<string>("");
     const [selectedRenderer, setSelectedRenderer] =
         useState<FileType>(initialFileReader);
 
-    const handleSaveFileName = async (newFileUrl: string) => {
+    const parsedFileName = useMemo(() => {
+        if (fileUrl) {
+            return fileUrl.split("/").pop() ?? null;
+        }
+
+        return null;
+    }, [fileUrl]);
+
+    const isFileNameChanged = !!(
+        fileUrl && parsedFileName !== fileNameState?.trim()
+    );
+
+    const handleResetFileName = () => {
+        if (parsedFileName) {
+            setFileNameState(parsedFileName);
+        }
+    };
+
+    const callSaveFileName = async () => {
         if (!fileUrl) return;
+
+        const newFileUrl =
+            fileUrl?.split("/").slice(0, -1).concat(fileNameState).join("/") ||
+            "";
+
+        if (!newFileUrl) return;
 
         try {
             await renameServerFile(fileUrl, newFileUrl);
@@ -63,6 +85,14 @@ export const FileReaderWrapper = ({
             console.log(error);
         }
     };
+
+    // Update the file name textbox and the renderer being used
+    useEffect(() => {
+        if (fileUrl) {
+            const newParsedFileName = fileUrl.split("/").pop() || "";
+            setFileNameState(newParsedFileName);
+        }
+    }, [fileUrl]);
 
     useEffect(() => {
         if (fileUrl) {
@@ -94,6 +124,16 @@ export const FileReaderWrapper = ({
         </Select>
     );
 
+    const FileNameRenderer = () => (
+        <FileName
+            fileNameState={fileNameState}
+            setFileNameState={setFileNameState}
+            isFileNameChanged={isFileNameChanged}
+            handleResetFileName={handleResetFileName}
+            handleSaveFileName={callSaveFileName}
+        />
+    );
+
     if (!fileUrl) {
         return (
             <NoFileSelected
@@ -112,8 +152,8 @@ export const FileReaderWrapper = ({
                     clearFileSelectionInCache={() =>
                         updateSelectedFileCache(null)
                     }
-                    handleSaveFileName={handleSaveFileName}
                     SelectFileRenderer={SelectFileRenderer}
+                    FileNameRenderer={FileNameRenderer}
                 />
             </AppBar>
             <Divider />

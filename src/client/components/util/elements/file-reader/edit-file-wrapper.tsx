@@ -9,24 +9,16 @@ import {
     useCallback,
     FunctionComponent,
 } from "react";
-import { FileReaderProps } from "./file-reader-wrapper";
 import { Clear, Save } from "@mui/icons-material";
 import { Loader } from "../../common/loader.components";
-import { FileType } from "./utils/utils";
 import { useIsMobile } from "@/client/utils/hooks";
-
-export interface EditFileRenderProps {
-    contentState: string | null;
-    handleKeyDown: KeyboardEventHandler<HTMLDivElement>;
-    handleChange: (val: string) => void;
-    height: string;
-}
+import { EditFileRenderProps } from "./editors/type";
+import { FileReaderProps } from "./readers/type";
 
 export interface EditFileWrapperProps extends FileReaderProps {
     RenderFile: FunctionComponent<EditFileRenderProps>;
 }
 
-// TODO: Allow passing custom renderer
 export const EditFileWrapper = ({
     fileUrl,
     RenderFile,

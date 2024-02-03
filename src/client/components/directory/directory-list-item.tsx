@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { FunctionComponent, ReactNode } from "react";
-import { truncate } from "../../util/utils";
+import { truncate } from "../util/utils";
 
 export interface DirectoryListItemProps {
     primaryElement?: string | ReactNode;
