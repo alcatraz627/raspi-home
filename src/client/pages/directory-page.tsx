@@ -21,7 +21,6 @@ import {
     FilePreviewProps,
 } from "../components/util/elements/file-render/file-preview";
 import { TFile } from "../components/util/elements/file-render/upload-file";
-import { RouteMap } from "../routes";
 import { useIsMobile } from "../utils/hooks";
 import { useDirectoryState } from "../utils/use-directory-state/use-directory-state";
 import {
@@ -30,6 +29,7 @@ import {
 } from "../utils/use-directory-state/use-query-param";
 import { useGlobal } from "../utils/use-global/use-global";
 import { useServerData } from "../utils/use-server-data/use-server-data";
+import { RouteMap } from "../routes/routes.utils";
 
 export type NavigatePath = string | ((v: string) => string) | null;
 
@@ -140,6 +140,9 @@ export const DirectoryPage: React.FunctionComponent = () => {
         const parsedNewPath =
             (typeof newPath === "function" ? newPath(pathString) : newPath) ||
             "";
+
+        // Reset the selected open file before the folder change so the new folder can open its last open file
+        handleSelectFile(null);
 
         setPathString(parsedNewPath);
         fetchDirContents(parsedNewPath);

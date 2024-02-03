@@ -279,11 +279,7 @@ export const FilePreview = ({
             </AppBar>
             <Divider />
             <Box width="100%">
-                <RenderFile
-                    fileUrl={fileUrl}
-                    key={fileRenderer}
-                    updateSelectedFile={updateSelectedFile}
-                />
+                <RenderFile fileUrl={fileUrl} key={fileRenderer} />
             </Box>
         </Box>
     );

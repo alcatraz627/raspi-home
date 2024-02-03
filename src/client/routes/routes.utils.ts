@@ -1,15 +1,13 @@
-import { Home, SdStorage, SvgIconComponent } from "@mui/icons-material";
+import { SvgIconComponent, SdStorage, Home } from "@mui/icons-material";
 import { RouteObject } from "react-router-dom";
-import { DirectoryPage } from "./pages/directory-page";
-import { HomePage } from "./pages/home-page";
-import { QueryKeys } from "./utils/use-directory-state/use-query-param";
+import { QueryKeys } from "../utils/use-directory-state/use-query-param";
 
 export enum RouteKey {
     home = "home",
     browse = "browse",
 }
 
-const RouteLinks: Record<RouteKey, string> = {
+export const RouteLinks: Record<RouteKey, string> = {
     [RouteKey.home]: "/",
     [RouteKey.browse]: `/browse/*`,
 } as const;
@@ -30,7 +28,6 @@ export const RouteMap: Record<
         key: RouteKey.browse,
         path: RouteLinks.browse,
         Icon: SdStorage,
-        Component: DirectoryPage,
         pageOptions: {
             showDrawer: true,
         },
@@ -43,16 +40,7 @@ export const RouteMap: Record<
     [RouteKey.home]: {
         key: RouteKey.home,
         path: RouteLinks.home,
-        Component: HomePage,
         Icon: Home,
         getPath: () => "/",
     },
 };
-
-export const routes: RouteObject[] = Object.values(RouteMap).map<RouteObject>(
-    ({ path, Component }) =>
-        ({
-            path,
-            Component,
-        }) as RouteObject
-);

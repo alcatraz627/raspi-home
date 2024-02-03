@@ -6,7 +6,7 @@ import { useNotify } from "../utils/use-notify/notify-provider.component";
 import { MDEditor } from "../components/util/elements/md-editor/md-editor.component";
 import { Edit } from "@mui/icons-material";
 import { Message } from "../components/util/common/message.components";
-import { RouteMap } from "../routes";
+import { RouteMap } from "@/client/routes/routes.utils";
 
 export interface TodoItem {
     text?: string;

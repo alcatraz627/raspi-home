@@ -5,7 +5,6 @@ import {
     renameServerDirectory,
 } from "@/client/api";
 import { NavigatePath } from "@/client/pages/directory-page";
-import { RouteMap } from "@/client/routes";
 import { useNotify } from "@/client/utils/use-notify/notify-provider.component";
 import {
     AddCircleOutline,
@@ -36,6 +35,7 @@ import {
     TFile,
     UploadFileProps,
 } from "../../util/elements/file-render/upload-file";
+import { RouteMap } from "@/client/routes/routes.utils";
 
 export interface DirectoryListProps {
     pathList: string[];

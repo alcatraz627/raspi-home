@@ -1,4 +1,3 @@
-import { RouteKey, RouteMap } from "@/client/routes";
 import { useIsMobile, useMounted } from "@/client/utils/hooks";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
@@ -12,6 +11,8 @@ import {
 } from "@mui/material";
 import { useGlobal } from "../../../utils/use-global/use-global";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
+import { RouteMap, RouteKey } from "@/client/routes/routes.utils";
 
 export const Navbar = (): JSX.Element => {
     const { setValue } = useGlobal();
@@ -52,13 +53,13 @@ export const Navbar = (): JSX.Element => {
                         )}
                     <Typography
                         variant={isMobile ? "body2" : "h6"}
-                        component="a"
+                        component={Link}
                         sx={{
                             textDecoration: "none",
                             color: "primary.contrastText",
                             marginLeft: isMobile ? 2 : 0,
                         }}
-                        href={RouteMap.home.getPath()}
+                        to={RouteMap.home.getPath()}
                     >
                         Ras-pi Home
                     </Typography>
@@ -72,7 +73,8 @@ export const Navbar = (): JSX.Element => {
                                     <IconButton
                                         color="inherit"
                                         size="small"
-                                        href={getPath("")}
+                                        to={getPath("")}
+                                        component={Link}
                                     >
                                         <Icon fontSize="small" />
                                     </IconButton>
