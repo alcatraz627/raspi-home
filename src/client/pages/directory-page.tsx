@@ -11,7 +11,7 @@ import {
     DirectoryList,
     DirectoryListProps,
 } from "../components/directory/directory-list/directory-list";
-import { DirectoryPathBreadcrumbs } from "../components/directory/directory-path-breadcrumbs.component";
+import { DirectoryPathBreadcrumbs } from "../components/directory/breadcrumbs/directory-path-breadcrumbs.component";
 import {
     DirectoryTitle,
     DirectoryTitleProps,
@@ -19,8 +19,8 @@ import {
 import {
     FilePreview,
     FilePreviewProps,
-} from "../components/files/file-preview";
-import { TFile } from "../components/files/upload-file";
+} from "../components/util/elements/file-render/file-preview";
+import { TFile } from "../components/util/elements/file-render/upload-file";
 import { RouteMap } from "../routes";
 import { useIsMobile } from "../utils/hooks";
 import { useDirectoryState } from "../utils/use-directory-state/use-directory-state";

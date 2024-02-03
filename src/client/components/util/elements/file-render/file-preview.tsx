@@ -23,10 +23,7 @@ import {
     Typography,
 } from "@mui/material";
 import { FunctionComponent, useEffect, useMemo, useState } from "react";
-import {
-    RenderEditor,
-    RenderEditorProps,
-} from "./file-type-renders/render-editor";
+import { RenderText, RenderTextProps } from "./file-type-renders/render-text";
 import { RenderImage } from "./file-type-renders/render-image";
 import { TFile, UploadFile, UploadFileProps } from "./upload-file";
 import { RenderPdf } from "./file-type-renders/render-pdf";
@@ -146,16 +143,17 @@ export const FilePreview = ({
         }
     }, [fileUrl]);
 
+    // TODO: Move wrapper to another component
     // The file renderer to use, based on file name extension
     const RenderFile = useMemo(() => {
-        if (fileRenderer === "text") return RenderEditor;
+        if (fileRenderer === "text") return RenderText;
 
         switch (fileType) {
             case "image":
                 return RenderImage;
             case "markdown":
-                return (props: Omit<RenderEditorProps, "editorType">) => (
-                    <RenderEditor editorType="markdown" {...props} />
+                return (props: Omit<RenderTextProps, "editorType">) => (
+                    <RenderText editorType="markdown" {...props} />
                 );
             case "csv":
             // TODO
@@ -166,7 +164,7 @@ export const FilePreview = ({
                 return RenderVideo;
             case "text":
             default:
-                return RenderEditor;
+                return RenderText;
         }
     }, [fileUrl, fileRenderer]);
 
@@ -281,7 +279,11 @@ export const FilePreview = ({
             </AppBar>
             <Divider />
             <Box width="100%">
-                <RenderFile fileUrl={fileUrl} key={fileRenderer} />
+                <RenderFile
+                    fileUrl={fileUrl}
+                    key={fileRenderer}
+                    updateSelectedFile={updateSelectedFile}
+                />
             </Box>
         </Box>
     );

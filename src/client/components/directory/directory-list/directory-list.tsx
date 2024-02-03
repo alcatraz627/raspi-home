@@ -29,10 +29,13 @@ import {
     Typography,
 } from "@mui/material";
 import { FunctionComponent, useMemo, useState } from "react";
-import { PageMessage } from "../../util/elements/page-message.components";
+import { Message } from "../../util/common/message.components";
 import { DirectoryListItem } from "./directory-list-item";
 import { useDropzone } from "react-dropzone";
-import { TFile, UploadFileProps } from "../../files/upload-file";
+import {
+    TFile,
+    UploadFileProps,
+} from "../../util/elements/file-render/upload-file";
 
 export interface DirectoryListProps {
     pathList: string[];
@@ -92,8 +95,11 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
         const filePath = getFullPath(fileName);
         await deleteServerFile(filePath);
 
+        // here
         refreshFolderContents();
         notify({ message: `${fileName} deleted` });
+
+        selectFile(null);
     };
 
     const handleDeleteFolder = async (folderName: string): Promise<void> => {
@@ -253,7 +259,7 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
                 />
             ))}
             {filtered.folders.length === 0 && filtered.files.length === 0 && (
-                <PageMessage
+                <Message
                     variant="body2"
                     py={4}
                     px={2}
@@ -261,7 +267,7 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
                     color="grey.500"
                 >
                     No results found
-                </PageMessage>
+                </Message>
             )}
             <DirectoryListItem
                 avatarVariant="circular"

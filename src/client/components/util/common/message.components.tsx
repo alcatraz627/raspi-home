@@ -1,14 +1,14 @@
 import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
 import { FunctionComponent, ReactNode } from "react";
 
-export interface PageMessageProps extends BoxProps {
+export interface MessageProps extends BoxProps {
     children?: string | ReactNode;
     fullWidth?: boolean;
     disablePadding?: boolean;
     variant?: TypographyProps["variant"];
 }
 
-export const PageMessage: FunctionComponent<PageMessageProps> = ({
+export const Message: FunctionComponent<MessageProps> = ({
     fullWidth,
     disablePadding,
     children,

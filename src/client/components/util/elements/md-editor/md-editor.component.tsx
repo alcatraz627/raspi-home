@@ -1,7 +1,7 @@
 import { Box, useMediaQuery } from "@mui/material";
 import React, { FunctionComponent, Suspense, lazy } from "react";
 import { IMarkdownEditor } from "@uiw/react-markdown-editor";
-import { Loader } from "@/client/components/util/elements/loader.components";
+import { Loader } from "@/client/components/util/common/loader.components";
 
 import MarkdownEditor from "@uiw/react-markdown-editor";
 import { useIsMobile } from "@/client/utils/hooks";

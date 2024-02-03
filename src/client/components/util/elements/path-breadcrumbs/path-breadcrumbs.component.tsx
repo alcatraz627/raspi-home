@@ -1,14 +1,14 @@
 import { Box, Chip } from "@mui/material";
 import { Fragment, FunctionComponent } from "react";
-import { NavigatePath } from "../../../pages/directory-page";
-import { useIsMobile } from "../../../utils/hooks";
+import { NavigatePath } from "../../../../pages/directory-page";
+import { useIsMobile } from "../../../../utils/hooks";
 
-export interface ServerBreadcrumbsProps {
+export interface PathBreadcrumbsProps {
     parsedPath: string[];
     selectFolder: (newPath: NavigatePath) => void;
 }
 
-export const ServerBreadcrumbs: FunctionComponent<ServerBreadcrumbsProps> = ({
+export const PathBreadcrumbs: FunctionComponent<PathBreadcrumbsProps> = ({
     parsedPath,
     selectFolder,
 }) => {

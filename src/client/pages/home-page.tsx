@@ -3,9 +3,9 @@ import { Box, Button, Chip, Divider, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { FunctionComponent } from "react";
 import { useNotify } from "../utils/use-notify/notify-provider.component";
-import { MDEditor } from "../components/files/file-type-renders/md-editor/md-editor.component";
+import { MDEditor } from "../components/util/elements/md-editor/md-editor.component";
 import { Edit } from "@mui/icons-material";
-import { PageMessage } from "../components/util/elements/page-message.components";
+import { Message } from "../components/util/common/message.components";
 import { RouteMap } from "../routes";
 
 export interface TodoItem {
@@ -47,7 +47,7 @@ export const HomePage: FunctionComponent = () => {
 
             {todoFileData && <MDEditor preview value={todoFileData} />}
             {todoFileLoadStatus !== "success" && (
-                <PageMessage
+                <Message
                     sx={{
                         bgcolor: "grey.100",
                         borderRadius: 2,
@@ -62,7 +62,7 @@ export const HomePage: FunctionComponent = () => {
                         size="small"
                         label={ToDoFilePath}
                     />
-                </PageMessage>
+                </Message>
             )}
         </Box>
     );

@@ -1,7 +1,7 @@
 import { NavigatePath } from "@/client/pages/directory-page";
 import { Box, Input, Button } from "@mui/material";
 import { FunctionComponent } from "react";
-import { ServerBreadcrumbs } from "../util/server-breadcrumbs/server-breadcrumbs.component";
+import { PathBreadcrumbs } from "../../util/elements/path-breadcrumbs/path-breadcrumbs.component";
 import { useIsMobile } from "@/client/utils/hooks";
 
 export interface DirectoryPathBreadcrumbsProps {
@@ -23,7 +23,7 @@ export const DirectoryPathBreadcrumbs: FunctionComponent<
                 }),
             }}
         >
-            <ServerBreadcrumbs
+            <PathBreadcrumbs
                 parsedPath={parsedPath}
                 selectFolder={handleSelectFolder}
             />

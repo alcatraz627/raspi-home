@@ -5,17 +5,18 @@ import debounce from "lodash/debounce";
 import { useState, useEffect, KeyboardEventHandler, useCallback } from "react";
 import { RenderFileProps } from "../file-preview";
 import { Clear, Save } from "@mui/icons-material";
-import { MDEditor } from "./md-editor/md-editor.component";
-import { Loader } from "../../util/elements/loader.components";
+import { MDEditor } from "../../md-editor/md-editor.component";
+import { Loader } from "../../../common/loader.components";
 
-export interface RenderEditorProps extends RenderFileProps {
+export interface RenderTextProps extends RenderFileProps {
     editorType?: "markdown" | "text";
 }
 
-export const RenderEditor = ({
+// TODO: Allow passing custom renderer
+export const RenderText = ({
     fileUrl,
     editorType = "text",
-}: RenderEditorProps) => {
+}: RenderTextProps) => {
     const [fileData, fileActions, fileStatus] = useServerData(readServerFile);
     const [content, setContent] = useState<string | null>(null);
     const [contentState, setContentState] = useState<string | null>(null);
