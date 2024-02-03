@@ -93,5 +93,6 @@ export interface EditFileRenderProps {
 }
 
 export interface FileReaderProps {
+    height: string;
     fileUrl: string;
 }

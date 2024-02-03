@@ -2,6 +2,7 @@ import {
     createServerFile,
     deleteServerDirectory,
     deleteServerFile,
+    getApiUrl,
     renameServerDirectory,
 } from "@/client/api";
 import { NavigatePath } from "@/client/pages/directory-page";
@@ -34,6 +35,7 @@ import { useDropzone } from "react-dropzone";
 import { TFile, UploadFileProps } from "../util/elements/upload-file";
 import { RouteMap } from "@/client/routes/routes.utils";
 import { useIsMobile } from "@/client/utils/hooks";
+import { FsAction, FsObject } from "@/server/routes/api/constants";
 
 export interface DirectoryListProps {
     pathList: string[];
@@ -127,8 +129,9 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
     };
 
     const handleOpenFileInNewTab = (fileName: string): void => {
-        const folder = getFullPath();
-        const openFilePath = RouteMap.browse.getPath(folder, fileName);
+        const filePath = getFullPath(fileName);
+        const openFilePath = getApiUrl(FsAction.Read, FsObject.File, filePath);
+
         window.open(openFilePath, "_blank");
     };
 
@@ -220,7 +223,7 @@ export const DirectoryList: FunctionComponent<DirectoryListProps> = ({
                         listMaxHeight ??
                         (isMobile
                             ? "calc(100dvh - 320px)"
-                            : "calc(100dvh - 430px)"),
+                            : "calc(100dvh - 400px)"),
                     overflow: "auto",
                 }}
             >

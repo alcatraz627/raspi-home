@@ -7,7 +7,7 @@ import {
 import { getFsServerUrl } from "@/server/routes/api/constants";
 import axios from "axios";
 
-const getApiUrl = (
+export const getApiUrl = (
     fsAction: FsAction,
     fsObject: FsObject,
     queryPath: string,

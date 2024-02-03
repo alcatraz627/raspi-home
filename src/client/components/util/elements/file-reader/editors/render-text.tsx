@@ -6,12 +6,13 @@ export const RenderText = ({
     contentState,
     handleKeyDown,
     handleChange,
+    height,
 }: EditFileRenderProps) => {
     return (
         <TextField
             fullWidth
             multiline
-            // rows={12}
+            // rows={20}
             value={contentState}
             sx={{
                 height: "100%",
@@ -22,6 +23,7 @@ export const RenderText = ({
             onKeyDown={handleKeyDown}
             InputProps={{
                 sx: {
+                    height: height,
                     fontFamily: "monospace!important",
                     fontSize: 16,
                     bgcolor: "#333",

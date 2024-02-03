@@ -12,8 +12,7 @@ import {
 import { Clear, Save } from "@mui/icons-material";
 import { Loader } from "../../common/loader.components";
 import { useIsMobile } from "@/client/utils/hooks";
-import { EditFileRenderProps } from "./editors/type";
-import { FileReaderProps } from "./readers/type";
+import { FileReaderProps, EditFileRenderProps } from "./utils/utils";
 
 export interface EditFileWrapperProps extends FileReaderProps {
     RenderFile: FunctionComponent<EditFileRenderProps>;
@@ -22,6 +21,7 @@ export interface EditFileWrapperProps extends FileReaderProps {
 export const EditFileWrapper = ({
     fileUrl,
     RenderFile,
+    height,
 }: EditFileWrapperProps) => {
     const isMobile = useIsMobile();
     const [fileData, fileActions, fileStatus] = useServerData(readServerFile);
@@ -85,12 +85,10 @@ export const EditFileWrapper = ({
                 contentState={contentState}
                 handleChange={handleChange}
                 handleKeyDown={handleKeyDown}
-                height={
-                    isMobile ? "calc(100dvh - 264px)" : "calc(100dvh - 430px)"
-                }
+                height={height}
             />
 
-            <Box display="flex" justifyContent="space-between" py={2} gap={2}>
+            <Box display="flex" justifyContent="space-between" py={1} gap={2}>
                 <Box flexGrow={1} />
                 <Button
                     variant="outlined"

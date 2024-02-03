@@ -22,6 +22,7 @@ import {
     getDefaultRenderer,
     guessFileType,
 } from "./utils/utils";
+import { useIsMobile } from "@/client/utils/hooks";
 
 export interface ReadFileWrapperProps {
     pathList: string[];
@@ -44,6 +45,7 @@ export const ReadFileWrapper = ({
     initialFileReader = "text",
 }: ReadFileWrapperProps) => {
     const fileType = guessFileType(fileUrl);
+    const isMobile = useIsMobile();
 
     const [fileNameState, setFileNameState] = useState<string>("");
     const [selectedRenderer, setSelectedRenderer] =
@@ -100,8 +102,9 @@ export const ReadFileWrapper = ({
         }
     }, [fileUrl]);
 
-    const [RenderFile, isEditable] = getDefaultRenderer(
-        selectedRenderer || fileType
+    const [RenderFile, isEditable] = useMemo(
+        () => getDefaultRenderer(selectedRenderer || fileType),
+        [selectedRenderer || fileType]
     );
 
     const SelectFileRenderer = () => (
@@ -134,6 +137,14 @@ export const ReadFileWrapper = ({
         />
     );
 
+    const readHeight = isMobile
+        ? "calc(100dvh - 264px + 56px)"
+        : "calc(100dvh - 380px + 56px)";
+
+    const editHeight = isMobile
+        ? "calc(100dvh - 264px)"
+        : "calc(100dvh - 380px)";
+
     if (!fileUrl) {
         return (
             <NoFileSelected
@@ -162,9 +173,10 @@ export const ReadFileWrapper = ({
                     <EditFileWrapper
                         fileUrl={fileUrl}
                         RenderFile={RenderFile}
+                        height={editHeight}
                     />
                 ) : (
-                    <RenderFile fileUrl={fileUrl} />
+                    <RenderFile height={readHeight} fileUrl={fileUrl} />
                 )}
             </Box>
         </Box>

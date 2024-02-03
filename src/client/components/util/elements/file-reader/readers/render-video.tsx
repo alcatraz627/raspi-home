@@ -6,7 +6,7 @@ import {
     FsObject,
 } from "@/server/routes/api/constants";
 
-export const RenderVideo = ({ fileUrl }: FileReaderProps) => {
+export const RenderVideo = ({ fileUrl, height }: FileReaderProps) => {
     const videoSrc = getFsServerUrl({
         fsAction: FsAction.Read,
         fsObject: FsObject.File,
@@ -14,8 +14,8 @@ export const RenderVideo = ({ fileUrl }: FileReaderProps) => {
     });
 
     return (
-        <Box key={fileUrl}>
-            <video src={videoSrc} width="100%" controls />
+        <Box key={fileUrl} bgcolor={"rgba(0, 0, 0, 0.12)"}>
+            <video src={videoSrc} width="100%" height={height} controls />
         </Box>
     );
 };
